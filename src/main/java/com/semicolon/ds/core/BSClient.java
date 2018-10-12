@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.StringTokenizer;
+import java.net.*;
 import java.util.logging.Logger;
 
 public class BSClient {
@@ -14,7 +15,8 @@ public class BSClient {
     private final Logger LOG = Logger.getLogger(BSClient.class.getName());
 
     private String BS_IPAddress;
-    private String BS_Port;
+    private int BS_Port;
+    private DatagramSocket sendingSocket;
 
 
     DatagramSocket datagramSocket;
@@ -27,12 +29,12 @@ public class BSClient {
         this.BS_Port = Constants.BS_PORT;
     }
 
-    public void register(String userName, String ipAddress, String port) throws IOException {
+    public void register(String userName, String ipAddress, int port) throws IOException {
 
         String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
 
         DatagramPacket datagramPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(ipAddress), Integer.parseInt(port));
+                request.length(), InetAddress.getByName(ipAddress), port);
 
         datagramSocket.send(datagramPacket);
 

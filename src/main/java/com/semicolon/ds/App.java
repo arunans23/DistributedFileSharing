@@ -18,7 +18,7 @@ public class App
         }
 
         try {
-            GNode node = new GNode(args[0], Constants.BS_IP, args[1]);
+            GNode node = new GNode(args[0], args[1]);
             node.register();
 
         } catch (IOException e) {

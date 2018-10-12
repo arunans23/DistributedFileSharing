@@ -22,7 +22,7 @@ public class GNode {
         this.bsClient = new BSClient();
     }
 
-    public void register(){
+    public void register() throws IOException {
         this.bsClient.register(this.userName, this.ipAddress, this.port);
     }
 

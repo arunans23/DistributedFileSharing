@@ -2,6 +2,11 @@ package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 public class BSClient {
@@ -11,16 +16,45 @@ public class BSClient {
     private String BS_IPAddress;
     private String BS_Port;
 
-    public BSClient() {
+
+    DatagramSocket datagramSocket;
+
+    public BSClient() throws IOException{
+
+        datagramSocket = new DatagramSocket();
+
         this.BS_IPAddress = Constants.BS_IP;
         this.BS_Port = Constants.BS_PORT;
     }
 
-    public void register(String userName, String ipAddress, String port) {
+    public void register(String userName, String ipAddress, String port) throws IOException {
+
+        String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
+
+        DatagramPacket datagramPacket = new DatagramPacket(request.getBytes(),
+                request.length(), InetAddress.getByName(ipAddress), Integer.parseInt(port));
+
+        datagramSocket.send(datagramPacket);
+
+        byte[] buffer = new byte[65536];
+
+        DatagramPacket received = new DatagramPacket(buffer, buffer.length);
+
+        datagramSocket.receive(received);
+
+        String response = new String(received.getData(), 0, received.getLength());
+
+        processResponse(response);
 
     }
 
     public void unregister() {
+
+    }
+
+    private void processResponse(String response){
+        StringTokenizer st = new StringTokenizer(response, " ");
+
 
     }
 }

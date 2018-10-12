@@ -1,5 +1,6 @@
 package com.semicolon.ds.core;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class GNode {
@@ -12,7 +13,7 @@ public class GNode {
     private String ipAddress;
     private String port;
 
-    public GNode (String userName, String ipAddress, String port) {
+    public GNode (String userName, String ipAddress, String port) throws IOException {
         this.userName = userName;
         this.ipAddress = ipAddress;
         this.port = port;
@@ -20,7 +21,7 @@ public class GNode {
         this.bsClient = new BSClient();
     }
 
-    public void register(){
+    public void register() throws IOException {
         this.bsClient.register(this.userName, this.ipAddress, this.port);
     }
 

@@ -54,7 +54,28 @@ public class BSClient {
 
     }
 
-    public void unregister() {
+    public boolean unRegister(String userName, String ipAddress, int port) throws IOException{
+
+        String request = String.format(Constants.UNREG_FORMAT, ipAddress, port, userName);
+
+        request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
+
+        DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
+                request.length(), InetAddress.getByName(BS_IPAddress), BS_Port);
+
+//        datagramSocket.setSoTimeout(Constants.TIMEOUT_REG);
+
+        datagramSocket.send(sendingPacket);
+
+        byte[] buffer = new byte[65536];
+
+        DatagramPacket received = new DatagramPacket(buffer, buffer.length);
+
+        datagramSocket.receive(received);
+
+        String response = new String(received.getData(), 0, received.getLength());
+
+        return  processBSUnregisterResponse(response);
 
     }
 
@@ -106,7 +127,7 @@ public class BSClient {
                 LOG.severe("Failed. There are errors in your command");
                 break;
             case 9998:
-                LOG.severe("Failed, already registered to you, unregister first");
+                LOG.severe("Failed, already registered to you, unRegister first");
                 break;
             case 9997:
                 LOG.severe("Failed, registered to another user, try a different IP and port");
@@ -119,7 +140,31 @@ public class BSClient {
         }
 
         return gNodes;
+    }
 
+    private boolean processBSUnregisterResponse(String response){
 
+        StringTokenizer stringTokenizer = new StringTokenizer(response, " ");
+
+        String length = stringTokenizer.nextToken();
+        String status = stringTokenizer.nextToken();
+
+        if (!Constants.UNROK.equals(status)) {
+            throw new IllegalStateException(Constants.UNROK + " not received");
+        }
+
+        int code = Integer.parseInt(stringTokenizer.nextToken());
+
+        switch (code) {
+            case 0:
+                LOG.info("Successfully unregistered");
+                return true;
+
+            case 9999:
+                LOG.severe("Error while un-registering. " +
+                        "IP and port may not be in the registry or command is incorrect");
+            default:
+                return false;
+        }
     }
 }

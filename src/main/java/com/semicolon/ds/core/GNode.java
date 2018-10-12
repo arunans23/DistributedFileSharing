@@ -27,7 +27,7 @@ public class GNode {
         LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
     }
 
-    public void register() throws IOException {
+    public void register() {
 
         try{
             this.bsClient.register(this.userName, this.ipAddress, this.port);
@@ -38,8 +38,14 @@ public class GNode {
         }
     }
 
-    public void unRegister(){
-        this.bsClient.unregister();
+    public void unRegister() throws IOException{
+        try{
+            this.bsClient.unRegister(this.userName, this.ipAddress, this.port);
+
+        } catch (IOException e) {
+            LOG.info("Un-Registering Gnode failed");
+            e.printStackTrace();
+        }
     }
 
     public String getUserName() {

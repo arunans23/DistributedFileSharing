@@ -12,4 +12,6 @@ public class Constants {
     public static final String REGOK = "REGOK";
     public static final String UNROK = "UNROK";
 
+    public static final int TIMEOUT_REG = 10000;
+
 }

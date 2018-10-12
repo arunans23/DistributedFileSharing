@@ -17,15 +17,25 @@ public class GNode {
     private int port;
 
     public GNode (String userName) throws IOException {
+
         this.userName = userName;
         this.ipAddress = Constants.BS_IP;
         this.port = getFreePort();
 
         this.bsClient = new BSClient();
+
+        LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
     }
 
     public void register() throws IOException {
-        this.bsClient.register(this.userName, this.ipAddress, this.port);
+
+        try{
+            this.bsClient.register(this.userName, this.ipAddress, this.port);
+
+        } catch (IOException e) {
+            LOG.info("Registering Gnode failed");
+            e.printStackTrace();
+        }
     }
 
     public void unRegister(){

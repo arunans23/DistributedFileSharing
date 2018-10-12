@@ -36,7 +36,9 @@ public class BSClient {
         request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
 
         DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(Constants.BS_IP), Constants.BS_PORT);
+                request.length(), InetAddress.getByName(BS_IPAddress), BS_Port);
+
+//        datagramSocket.setSoTimeout(Constants.TIMEOUT_REG);
 
         datagramSocket.send(sendingPacket);
 
@@ -48,7 +50,7 @@ public class BSClient {
 
         String response = new String(received.getData(), 0, received.getLength());
 
-        return  processResponse(response);
+        return  processBSResponse(response);
 
     }
 
@@ -56,18 +58,19 @@ public class BSClient {
 
     }
 
-    private List<InetSocketAddress> processResponse(String response){
+    private List<InetSocketAddress> processBSResponse(String response){
 
-        StringTokenizer st = new StringTokenizer(response, " ");
-        String length = st.nextToken();
+        StringTokenizer stringToken = new StringTokenizer(response, " ");
 
-        String status = st.nextToken();
+        String length = stringToken.nextToken();
+
+        String status = stringToken.nextToken();
 
         if (!Constants.REGOK.equals(status)) {
             throw new IllegalStateException(Constants.REGOK + " not received");
         }
 
-        int nodesCount = Integer.parseInt(st.nextToken());
+        int nodesCount = Integer.parseInt(stringToken.nextToken());
 
         List<InetSocketAddress> gNodes = null;
 
@@ -78,14 +81,24 @@ public class BSClient {
                 break;
 
             case 1:
-
-            case 2:
-                LOG.info("Successful - Found 1/2 other nodes in the network");
+                LOG.info("No of nodes found : 1");
 
                 gNodes = new ArrayList<>();
 
-                while (st.hasMoreTokens()) {
-                    gNodes.add(new InetSocketAddress(st.nextToken(), Integer.parseInt(st.nextToken())));
+                while (stringToken.hasMoreTokens()) {
+                    gNodes.add(new InetSocketAddress(stringToken.nextToken(),
+                            Integer.parseInt(stringToken.nextToken())));
+                }
+                break;
+
+            case 2:
+                LOG.info("No of nodes found : 2");
+
+                gNodes = new ArrayList<>();
+
+                while (stringToken.hasMoreTokens()) {
+                    gNodes.add(new InetSocketAddress(stringToken.nextToken(),
+                            Integer.parseInt(stringToken.nextToken())));
                 }
                 break;
 
@@ -102,7 +115,7 @@ public class BSClient {
                 LOG.severe("Failed, can’t register. BS full.");
                 break;
             default:
-                throw new IllegalStateException("No proper status code returned");
+                throw new IllegalStateException("Invalid status code");
         }
 
         return gNodes;

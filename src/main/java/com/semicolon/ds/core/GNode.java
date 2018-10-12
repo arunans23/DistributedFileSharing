@@ -1,5 +1,7 @@
 package com.semicolon.ds.core;
 
+import com.semicolon.ds.Constants;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.Logger;
@@ -14,9 +16,9 @@ public class GNode {
     private String ipAddress;
     private int port;
 
-    public GNode (String userName, String port) throws IOException {
+    public GNode (String userName) throws IOException {
         this.userName = userName;
-        this.ipAddress = InetAddress.getLocalHost().toString();
+        this.ipAddress = Constants.BS_IP;
         this.port = getFreePort();
 
         this.bsClient = new BSClient();

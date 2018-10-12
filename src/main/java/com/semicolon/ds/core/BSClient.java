@@ -33,10 +33,12 @@ public class BSClient {
 
         String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
 
-        DatagramPacket datagramPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(Constants.BS_IP), port);
+        request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
 
-        datagramSocket.send(datagramPacket);
+        DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
+                request.length(), InetAddress.getByName(Constants.BS_IP), Constants.BS_PORT);
+
+        datagramSocket.send(sendingPacket);
 
         byte[] buffer = new byte[65536];
 
@@ -57,6 +59,8 @@ public class BSClient {
     private List<InetSocketAddress> processResponse(String response){
 
         StringTokenizer st = new StringTokenizer(response, " ");
+        String length = st.nextToken();
+
         String status = st.nextToken();
 
         if (!Constants.REGOK.equals(status)) {

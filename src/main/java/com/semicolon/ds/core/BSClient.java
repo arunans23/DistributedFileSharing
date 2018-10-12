@@ -18,8 +18,6 @@ public class BSClient {
 
     private String BS_IPAddress;
     private int BS_Port;
-    private DatagramSocket sendingSocket;
-
 
     DatagramSocket datagramSocket;
 
@@ -36,7 +34,7 @@ public class BSClient {
         String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
 
         DatagramPacket datagramPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(ipAddress), port);
+                request.length(), InetAddress.getByName(Constants.BS_IP), port);
 
         datagramSocket.send(datagramPacket);
 

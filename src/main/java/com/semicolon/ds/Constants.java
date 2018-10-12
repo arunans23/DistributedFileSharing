@@ -7,4 +7,7 @@ public class Constants {
 
     public static final String REG_FORMAT = "REG %s %s %s";
 
+    public static final String REGOK = "REGOK";
+    public static final String UNROK = "UNROK";
+
 }

@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 public class UDPServer extends Thread {
-    private final BlockingDeque<ChannelMessage> channelIn;
+    private final BlockingQueue<ChannelMessage> channelIn;
     private final DatagramSocket socket;
     private volatile boolean process = true;
-    public UDPServer(BlockingDeque<ChannelMessage> channelIn, DatagramSocket socket) {
+    public UDPServer(BlockingQueue<ChannelMessage> channelIn, DatagramSocket socket) {
         this.channelIn = channelIn;
         this.socket = socket;
     }

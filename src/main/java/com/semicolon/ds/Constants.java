@@ -1,5 +1,7 @@
 package com.semicolon.ds;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 public class Constants {
 
     public static final String BS_PROPERTIES = "Bootstrap.properties";
@@ -14,5 +16,8 @@ public class Constants {
     public static final String UNROK = "UNROK";
 
     public static final int TIMEOUT_REG = 10000;
+
+    public static final int MIN_NEIGHBOURS = 2;
+    public static final int MAX_NEIGHBOURS = 4;
 
 }

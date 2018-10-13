@@ -6,7 +6,7 @@ import com.semicolon.ds.comms.UDPServer;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Logger;
 
@@ -14,7 +14,7 @@ public class MessageBroker extends Thread{
     private final Logger LOG = Logger.getLogger(MessageBroker.class.getName());
     private volatile boolean process = true;
     private final UDPServer server;
-    private BlockingDeque<ChannelMessage> chanelIn = new LinkedBlockingDeque<ChannelMessage>();
+    private BlockingQueue<ChannelMessage> chanelIn = new LinkedBlockingDeque<ChannelMessage>();
     public MessageBroker() throws SocketException {
         DatagramSocket socket = new DatagramSocket(9876);
         this.server = new UDPServer(chanelIn, socket);

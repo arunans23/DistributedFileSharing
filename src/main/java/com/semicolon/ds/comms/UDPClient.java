@@ -3,13 +3,13 @@ package com.semicolon.ds.comms;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 public class UDPClient extends Thread {
-    private final BlockingDeque<ChannelMessage> channelOut;
+    private final BlockingQueue<ChannelMessage> channelOut;
     private final DatagramSocket socket;
     private volatile boolean process = true;
-    public UDPClient(BlockingDeque<ChannelMessage> channelOut, DatagramSocket socket) {
+    public UDPClient(BlockingQueue<ChannelMessage> channelOut, DatagramSocket socket) {
         this.channelOut = channelOut;
         this.socket = socket;
     }

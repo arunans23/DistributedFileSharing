@@ -19,7 +19,7 @@ public class GNode {
     public GNode (String userName) throws IOException {
 
         this.userName = userName;
-        this.ipAddress = Constants.BS_IP;
+        this.ipAddress = Constants.LOCALHOST;
         this.port = getFreePort();
 
         this.bsClient = new BSClient();

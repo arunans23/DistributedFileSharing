@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.net.*;
 import java.util.logging.Logger;
 
@@ -25,8 +23,7 @@ public class BSClient {
 
         datagramSocket = new DatagramSocket();
 
-        this.BS_IPAddress = Constants.BS_IP;
-        this.BS_Port = Constants.BS_PORT;
+        readProperties();
     }
 
     public List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
@@ -35,22 +32,7 @@ public class BSClient {
 
         request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
 
-        DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(BS_IPAddress), BS_Port);
-
-//        datagramSocket.setSoTimeout(Constants.TIMEOUT_REG);
-
-        datagramSocket.send(sendingPacket);
-
-        byte[] buffer = new byte[65536];
-
-        DatagramPacket received = new DatagramPacket(buffer, buffer.length);
-
-        datagramSocket.receive(received);
-
-        String response = new String(received.getData(), 0, received.getLength());
-
-        return  processBSResponse(response);
+        return  processBSResponse(sendOrReceive(request));
 
     }
 
@@ -60,22 +42,7 @@ public class BSClient {
 
         request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
 
-        DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(BS_IPAddress), BS_Port);
-
-//        datagramSocket.setSoTimeout(Constants.TIMEOUT_REG);
-
-        datagramSocket.send(sendingPacket);
-
-        byte[] buffer = new byte[65536];
-
-        DatagramPacket received = new DatagramPacket(buffer, buffer.length);
-
-        datagramSocket.receive(received);
-
-        String response = new String(received.getData(), 0, received.getLength());
-
-        return  processBSUnregisterResponse(response);
+        return  processBSUnregisterResponse(sendOrReceive(request));
 
     }
 
@@ -166,5 +133,45 @@ public class BSClient {
             default:
                 return false;
         }
+    }
+
+    private void readProperties() {
+        Properties bsProperties = new Properties();
+        try {
+            bsProperties.load(getClass().getClassLoader().getResourceAsStream(
+                    Constants.BS_PROPERTIES));
+
+        } catch (IOException e) {
+            LOG.info("Could not open " + Constants.BS_PROPERTIES);
+            throw new RuntimeException("Could not open " + Constants.BS_PROPERTIES);
+        } catch (NullPointerException e) {
+            LOG.info("Could not find " + Constants.BS_PROPERTIES);
+            throw new RuntimeException("Could not find " + Constants.BS_PROPERTIES);
+        }
+
+        this.BS_IPAddress = bsProperties.getProperty("bootstrap.ip");
+        this.BS_Port = Integer.parseInt(bsProperties.getProperty("bootstrap.port"));
+
+        bsProperties.getProperty("bootstrap.ip");
+
+    }
+
+    private String sendOrReceive(String request) throws IOException {
+        DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
+                request.length(), InetAddress.getByName(BS_IPAddress), BS_Port);
+
+        datagramSocket.setSoTimeout(Constants.TIMEOUT_REG);
+
+        datagramSocket.send(sendingPacket);
+
+        byte[] buffer = new byte[65536];
+
+        DatagramPacket received = new DatagramPacket(buffer, buffer.length);
+
+        datagramSocket.receive(received);
+
+        String response = new String(received.getData(), 0, received.getLength());
+
+        return response;
     }
 }

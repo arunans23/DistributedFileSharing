@@ -20,7 +20,7 @@ public class App
             GNode node = new GNode("node" + uniqueID);
             node.register();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

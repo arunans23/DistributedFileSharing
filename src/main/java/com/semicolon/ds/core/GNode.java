@@ -1,6 +1,7 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
+import com.semicolon.ds.comms.BSClient;
 
 import java.io.IOException;
 import java.net.*;

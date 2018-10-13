@@ -1,4 +1,4 @@
-package com.semicolon.ds.core;
+package com.semicolon.ds.comms;
 
 import com.semicolon.ds.Constants;
 
@@ -11,7 +11,7 @@ import java.net.*;
 import java.util.logging.Logger;
 
 
-class BSClient {
+public class BSClient {
 
     private final Logger LOG = Logger.getLogger(BSClient.class.getName());
 
@@ -20,14 +20,14 @@ class BSClient {
 
     private DatagramSocket datagramSocket;
 
-    BSClient() throws IOException{
+    public BSClient() throws IOException{
 
         datagramSocket = new DatagramSocket();
 
         readProperties();
     }
 
-    List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
+    public List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
 
         String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
 
@@ -37,7 +37,7 @@ class BSClient {
 
     }
 
-    boolean unRegister(String userName, String ipAddress, int port) throws IOException{
+    public boolean unRegister(String userName, String ipAddress, int port) throws IOException{
 
         String request = String.format(Constants.UNREG_FORMAT, ipAddress, port, userName);
 

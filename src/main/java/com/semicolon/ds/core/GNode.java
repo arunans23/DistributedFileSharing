@@ -26,7 +26,7 @@ public class GNode {
 
         this.bsClient = new BSClient();
         this.messageBroker = new MessageBroker();
-
+        messageBroker.start();
         LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
 
     }

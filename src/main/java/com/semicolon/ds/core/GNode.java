@@ -38,7 +38,7 @@ public class GNode {
         }
     }
 
-    public void unRegister() throws IOException{
+    public void unRegister() {
         try{
             this.bsClient.unRegister(this.userName, this.ipAddress, this.port);
 
@@ -60,10 +60,8 @@ public class GNode {
         return port;
     }
 
-    public int getFreePort() {
-        ServerSocket socket = null;
-        try {
-            socket = new ServerSocket(0);
+    private int getFreePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
             socket.setReuseAddress(true);
             int port = socket.getLocalPort();
             try {
@@ -73,14 +71,8 @@ public class GNode {
             }
             return port;
         } catch (IOException e) {
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                }
-            }
+            LOG.severe("Getting free port failed");
+            throw new RuntimeException("Getting free port failed");
         }
-        throw new IllegalStateException("");
     }
 }

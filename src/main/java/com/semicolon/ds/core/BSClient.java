@@ -10,23 +10,24 @@ import java.util.*;
 import java.net.*;
 import java.util.logging.Logger;
 
-public class BSClient {
+
+class BSClient {
 
     private final Logger LOG = Logger.getLogger(BSClient.class.getName());
 
     private String BS_IPAddress;
     private int BS_Port;
 
-    DatagramSocket datagramSocket;
+    private DatagramSocket datagramSocket;
 
-    public BSClient() throws IOException{
+    BSClient() throws IOException{
 
         datagramSocket = new DatagramSocket();
 
         readProperties();
     }
 
-    public List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
+    List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
 
         String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
 
@@ -36,7 +37,7 @@ public class BSClient {
 
     }
 
-    public boolean unRegister(String userName, String ipAddress, int port) throws IOException{
+    boolean unRegister(String userName, String ipAddress, int port) throws IOException{
 
         String request = String.format(Constants.UNREG_FORMAT, ipAddress, port, userName);
 
@@ -170,8 +171,6 @@ public class BSClient {
 
         datagramSocket.receive(received);
 
-        String response = new String(received.getData(), 0, received.getLength());
-
-        return response;
+        return new String(received.getData(), 0, received.getLength());
     }
 }

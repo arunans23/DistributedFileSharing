@@ -1,19 +1,16 @@
 package com.semicolon.ds.comms;
 
 
-import org.omg.PortableServer.THREAD_POLICY_ID;
-import sun.awt.windows.ThemeReader;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.BlockingDeque;
 
 public class UDPServer extends Thread {
-    private final BlockingDeque<ChanelMessage> channelIn;
+    private final BlockingDeque<ChannelMessage> channelIn;
     private final DatagramSocket socket;
     private volatile boolean process = true;
-    public UDPServer(BlockingDeque<ChanelMessage> channelIn, DatagramSocket socket) {
+    public UDPServer(BlockingDeque<ChannelMessage> channelIn, DatagramSocket socket) {
         this.channelIn = channelIn;
         this.socket = socket;
     }

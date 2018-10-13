@@ -1,11 +1,11 @@
 package com.semicolon.ds.comms;
 
-public class ChanelMessage {
+public class ChannelMessage {
     final String address;
     final int port;
     final String message;
 
-    public ChanelMessage(String address, int port, String message) {
+    public ChannelMessage(String address, int port, String message) {
         this.address = address;
         this.port = port;
         this.message = message;

@@ -6,10 +6,10 @@ import java.net.DatagramSocket;
 import java.util.concurrent.BlockingDeque;
 
 public class UDPClient extends Thread {
-    private final BlockingDeque<ChanelMessage> channelOut;
+    private final BlockingDeque<ChannelMessage> channelOut;
     private final DatagramSocket socket;
     private volatile boolean process = true;
-    public UDPClient(BlockingDeque<ChanelMessage> channelOut, DatagramSocket socket) {
+    public UDPClient(BlockingDeque<ChannelMessage> channelOut, DatagramSocket socket) {
         this.channelOut = channelOut;
         this.socket = socket;
     }

@@ -1,14 +1,13 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.net.*;
 import java.util.logging.Logger;
 
@@ -25,8 +24,7 @@ public class BSClient {
 
         datagramSocket = new DatagramSocket();
 
-        this.BS_IPAddress = Constants.BS_IP;
-        this.BS_Port = Constants.BS_PORT;
+        readProperties();
     }
 
     public List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
@@ -119,7 +117,31 @@ public class BSClient {
         }
 
         return gNodes;
+    }
 
+    private void readProperties(){
+        Properties bsProperties = new Properties();
+        try {
+            bsProperties.load(getClass().getClassLoader().getResourceAsStream(
+                    Constants.BS_PROPERTIES));
 
+        } catch (IOException e) {
+            LOG.info("Could not open " + Constants.BS_PROPERTIES);
+             throw new RuntimeException("Could not open " + Constants.BS_PROPERTIES);
+        } catch (NullPointerException e) {
+            LOG.info("Could not find " + Constants.BS_PROPERTIES);
+            throw new RuntimeException("Could not find " + Constants.BS_PROPERTIES);
+        }
+
+        for (Map.Entry<Object, Object> entry : bsProperties.entrySet()) {
+            String key = (String) entry.getKey();
+            String value = ((String) entry.getValue()).trim();
+
+            if ("bootstrap.ip".equals(key) && !StringUtils.isBlank(value)){
+                this.BS_IPAddress = value;
+            } else if ("bootstrap.port".equals(key) && !StringUtils.isBlank(value)){
+                this.BS_Port = Integer.parseInt(value);
+            }
+        }
     }
 }

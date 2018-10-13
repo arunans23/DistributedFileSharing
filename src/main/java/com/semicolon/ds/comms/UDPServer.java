@@ -22,9 +22,13 @@ public class UDPServer extends Thread {
             try {
                 byte[] response = new byte[65536];
                 DatagramPacket packet = new DatagramPacket(response, response.length);
-                    socket.receive(packet);
-                System.out.println(new String(packet.getData(), 0, packet.getLength()));
-            } catch (IOException e) {
+                socket.receive(packet);
+                String address = ((packet.getSocketAddress().toString()).substring(1)).split(":")[0];
+                int port = Integer.parseInt(((packet.getSocketAddress().toString()).substring(1)).split(":")[1]);
+                String body = new String(response, 0, response.length);
+                ChannelMessage message = new ChannelMessage(address, port, body);
+                channelIn.put(message);
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }

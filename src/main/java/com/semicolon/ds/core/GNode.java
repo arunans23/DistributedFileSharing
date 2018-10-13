@@ -16,6 +16,7 @@ public class GNode {
     private String userName;
     private String ipAddress;
     private int port;
+    private MessageBroker messageBroker;
 
     public GNode (String userName) throws IOException {
 
@@ -24,8 +25,10 @@ public class GNode {
         this.port = getFreePort();
 
         this.bsClient = new BSClient();
+        this.messageBroker = new MessageBroker();
 
         LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
+
     }
 
     public void register() {

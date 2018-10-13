@@ -1,28 +1,29 @@
 package com.semicolon.ds.comms;
 
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.concurrent.BlockingDeque;
 
-public class UDPClient extends Thread {
-    private final BlockingDeque<ChannelMessage> channelOut;
+public class UDPServer extends Thread {
+    private final BlockingDeque<ChannelMessage> channelIn;
     private final DatagramSocket socket;
     private volatile boolean process = true;
-    public UDPClient(BlockingDeque<ChannelMessage> channelOut, DatagramSocket socket) {
-        this.channelOut = channelOut;
+    public UDPServer(BlockingDeque<ChannelMessage> channelIn, DatagramSocket socket) {
+        this.channelIn = channelIn;
         this.socket = socket;
     }
 
     @Override
     public void run() {
         while (process) {
-            byte[] response = new byte[65536];
-            DatagramPacket packet = new DatagramPacket(response, response.length);
+
             try {
-                socket.receive(packet);
-                packet.getSocketAddress();
-//                channelIn.put(new String(packet.getData(), 0, packet.getLength()));
+                byte[] response = new byte[65536];
+                DatagramPacket packet = new DatagramPacket(response, response.length);
+                    socket.receive(packet);
+                System.out.println(new String(packet.getData(), 0, packet.getLength()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -33,5 +34,3 @@ public class UDPClient extends Thread {
         this.process = false;
     }
 }
-
-

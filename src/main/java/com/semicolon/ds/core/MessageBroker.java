@@ -3,7 +3,9 @@ package com.semicolon.ds.core;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.comms.UDPServer;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.net.SocketException;
 
 import java.util.concurrent.BlockingQueue;
@@ -15,8 +17,8 @@ public class MessageBroker extends Thread{
     private volatile boolean process = true;
     private final UDPServer server;
     private BlockingQueue<ChannelMessage> chanelIn = new LinkedBlockingDeque<ChannelMessage>();
-    public MessageBroker() throws SocketException {
-        DatagramSocket socket = new DatagramSocket(9876);
+    public MessageBroker(int port) throws SocketException {
+        DatagramSocket socket = new DatagramSocket(port);
         this.server = new UDPServer(chanelIn, socket);
         LOG.info("starting server");
 
@@ -46,7 +48,5 @@ public class MessageBroker extends Thread{
         server.stopProcessing();
 
     }
-
-
 
 }

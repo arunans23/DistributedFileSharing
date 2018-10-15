@@ -15,7 +15,7 @@ public class App
     {
 
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 String uniqueID = UUID.randomUUID().toString();
                 GNode node = new GNode("node" + uniqueID);

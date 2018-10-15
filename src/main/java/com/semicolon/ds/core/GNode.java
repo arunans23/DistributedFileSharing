@@ -5,6 +5,7 @@ import com.semicolon.ds.comms.BSClient;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class GNode {
@@ -25,17 +26,23 @@ public class GNode {
         this.port = getFreePort();
 
         this.bsClient = new BSClient();
-        this.messageBroker = new MessageBroker(getFreePort());
+        this.messageBroker = new MessageBroker(port);
         messageBroker.start();
         LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
+
+    }
+
+    public void init() {
 
     }
 
     public void register() {
 
         try{
-            this.bsClient.register(this.userName, this.ipAddress, this.port);
-
+            List<InetSocketAddress> targets= this.bsClient.register(this.userName, this.ipAddress, this.port);
+            for (InetSocketAddress target: targets) {
+                messageBroker.sendPing(target.getAddress().toString().substring(1), target.getPort());
+            }
         } catch (IOException e) {
             LOG.info("Registering Gnode failed");
             e.printStackTrace();

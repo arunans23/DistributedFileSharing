@@ -20,8 +20,15 @@ public class GNode {
 
     public GNode (String userName) throws IOException {
 
+        try(final DatagramSocket socket = new DatagramSocket()){
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            this.ipAddress = socket.getLocalAddress().getHostAddress();
+
+        } catch (Exception e){
+
+        }
+
         this.userName = userName;
-        this.ipAddress = Constants.LOCALHOST;
         this.port = getFreePort();
 
         this.bsClient = new BSClient();

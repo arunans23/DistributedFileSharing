@@ -8,12 +8,15 @@ import java.util.ArrayList;
 
 public class RoutingTable {
     private ArrayList<Neighbour> neighbours;
-
-    public RoutingTable() {
+    private final String address;
+    private final int port;
+    public RoutingTable(String address, int port) {
+        this.address = address;
+        this.port = port;
         this.neighbours = new ArrayList<>();
     }
 
-    public int addNeighbour(String address, int port) {
+    public synchronized int addNeighbour(String address, int port) {
         for (Neighbour n: neighbours) {
             if (n.eaquals(address, port)){
                 return 0;
@@ -26,7 +29,7 @@ public class RoutingTable {
         return neighbours.size();
     }
 
-    public int removeNeighbout(String address, int port) {
+    public synchronized int removeNeighbout(String address, int port) {
         Neighbour toRemove = null;
         for (Neighbour n:
              neighbours) {
@@ -40,11 +43,11 @@ public class RoutingTable {
         }
         return 0;
     }
-    public int getCount() {
+    public synchronized int getCount() {
         return neighbours.size();
     }
 
-    public void print() {
+    public synchronized void print() {
         System.out.println("Total neighbours: " + neighbours.size());
         System.out.println("++++++++++++++++++++++++++");
         for (Neighbour n :neighbours) {
@@ -55,7 +58,7 @@ public class RoutingTable {
             );
         }
     }
-    public ArrayList toList() {
+    public synchronized ArrayList toList() {
         ArrayList<String> list = new ArrayList<>();
         for (Neighbour n: neighbours) {
             list.add(n.toString());

@@ -19,7 +19,7 @@ public class App
             try {
                 String uniqueID = UUID.randomUUID().toString();
                 GNode node = new GNode("node" + uniqueID);
-                node.register();
+                node.init();
 
             } catch (Exception e) {
                 e.printStackTrace();

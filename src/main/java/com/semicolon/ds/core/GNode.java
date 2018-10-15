@@ -40,20 +40,25 @@ public class GNode {
     }
 
     public void init() {
-
-    }
-
-    public void register() {
-
-        try{
-            List<InetSocketAddress> targets= this.bsClient.register(this.userName, this.ipAddress, this.port);
+        List<InetSocketAddress> targets = this.register();
+        if(targets != null) {
             for (InetSocketAddress target: targets) {
                 messageBroker.sendPing(target.getAddress().toString().substring(1), target.getPort());
             }
+        }
+    }
+
+    private List<InetSocketAddress> register() {
+        List<InetSocketAddress> targets = null;
+        try{
+            targets= this.bsClient.register(this.userName, this.ipAddress, this.port);
         } catch (IOException e) {
             LOG.info("Registering Gnode failed");
             e.printStackTrace();
         }
+        return targets;
+
+
     }
 
     public void unRegister() {

@@ -10,6 +10,7 @@ public class RoutingTable {
     private ArrayList<Neighbour> neighbours;
     private final String address;
     private final int port;
+
     public RoutingTable(String address, int port) {
         this.address = address;
         this.port = port;
@@ -54,10 +55,11 @@ public class RoutingTable {
             System.out.println(
                     "Address: " + n.getAddress()
                     + " Port: " + n.getPort()
-                    + "Pings: " + n.getPingPongs()
+                    + " Pings: " + n.getPingPongs()
             );
         }
     }
+
     public synchronized ArrayList toList() {
         ArrayList<String> list = new ArrayList<>();
         for (Neighbour n: neighbours) {
@@ -66,4 +68,11 @@ public class RoutingTable {
         return list;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public int getPort() {
+        return port;
+    }
 }

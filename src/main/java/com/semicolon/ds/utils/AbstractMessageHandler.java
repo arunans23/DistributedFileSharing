@@ -1,5 +1,7 @@
 package com.semicolon.ds.utils;
 
-public interface AbstractMessageHandler {
+import com.semicolon.ds.core.MessageBroker;
 
+interface AbstractMessageHandler {
+    void init (MessageBroker messageBroker);
 }

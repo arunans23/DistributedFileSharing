@@ -5,7 +5,7 @@ import com.semicolon.ds.core.RoutingTable;
 
 import java.util.concurrent.BlockingQueue;
 
-public interface AbstractRequestHandler extends AbstractMessageHandler {
+public interface AbstractResponseHandler extends AbstractMessageHandler {
 
-    void handleRequest(ChannelMessage message);
+    void handleResponse(ChannelMessage message);
 }

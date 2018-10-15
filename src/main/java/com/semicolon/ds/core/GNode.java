@@ -1,6 +1,5 @@
 package com.semicolon.ds.core;
 
-import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.BSClient;
 
 import java.io.IOException;
@@ -21,20 +20,21 @@ public class GNode {
 
     public GNode (String userName) throws IOException {
 
-        try(final DatagramSocket socket = new DatagramSocket()){
+        try (final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
             this.ipAddress = socket.getLocalAddress().getHostAddress();
 
         } catch (Exception e){
-
+            throw new RuntimeException("Could not find host address");
         }
 
         this.userName = userName;
         this.port = getFreePort();
 
         this.bsClient = new BSClient();
-        this.messageBroker = new MessageBroker(ipAddress,port);
+        this.messageBroker = new MessageBroker(ipAddress, port);
         messageBroker.start();
+
         LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
 
     }
@@ -50,14 +50,15 @@ public class GNode {
 
     private List<InetSocketAddress> register() {
         List<InetSocketAddress> targets = null;
+
         try{
-            targets= this.bsClient.register(this.userName, this.ipAddress, this.port);
+            targets = this.bsClient.register(this.userName, this.ipAddress, this.port);
+
         } catch (IOException e) {
-            LOG.info("Registering Gnode failed");
+            LOG.severe("Registering Gnode failed");
             e.printStackTrace();
         }
         return targets;
-
 
     }
 
@@ -66,7 +67,7 @@ public class GNode {
             this.bsClient.unRegister(this.userName, this.ipAddress, this.port);
 
         } catch (IOException e) {
-            LOG.info("Un-Registering Gnode failed");
+            LOG.severe("Un-Registering Gnode failed");
             e.printStackTrace();
         }
     }

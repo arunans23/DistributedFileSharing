@@ -32,7 +32,7 @@ public class MessageBroker extends Thread{
 
     private PingPongMessageHandler pingPongMessageHandler;
 
-    public MessageBroker(int port) throws SocketException {
+    public MessageBroker(String address, int port) throws SocketException {
 
         channelIn = new LinkedBlockingQueue<ChannelMessage>();
         DatagramSocket socket = new DatagramSocket(port);
@@ -41,7 +41,7 @@ public class MessageBroker extends Thread{
         channelOut = new LinkedBlockingQueue<ChannelMessage>();
         this.client = new UDPClient(channelOut, new DatagramSocket());
 
-        this.routingTable = new RoutingTable(Constants.LOCALHOST, port);
+        this.routingTable = new RoutingTable(address, port);
 
         this.pingPongMessageHandler = new PingPongMessageHandler();
 

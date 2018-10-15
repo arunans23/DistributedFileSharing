@@ -33,7 +33,7 @@ public class GNode {
         this.port = getFreePort();
 
         this.bsClient = new BSClient();
-        this.messageBroker = new MessageBroker(port);
+        this.messageBroker = new MessageBroker(ipAddress,port);
         messageBroker.start();
         LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
 

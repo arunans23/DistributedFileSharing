@@ -2,7 +2,6 @@ package com.semicolon.ds;
 
 import com.semicolon.ds.core.GNode;
 
-import java.io.IOException;
 import java.util.UUID;
 
 /**

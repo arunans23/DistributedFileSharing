@@ -42,7 +42,7 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
 
 
     @Override
-    public void handleRequest(ChannelMessage message) {
+    public void sendRequest(ChannelMessage message) {
 
     }
 

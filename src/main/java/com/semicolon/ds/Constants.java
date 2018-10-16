@@ -1,7 +1,5 @@
 package com.semicolon.ds;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
 public class Constants {
 
     public static final String BS_PROPERTIES = "Bootstrap.properties";

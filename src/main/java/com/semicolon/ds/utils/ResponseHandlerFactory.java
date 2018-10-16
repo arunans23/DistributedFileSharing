@@ -1,9 +1,7 @@
 package com.semicolon.ds.utils;
 
-import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.MessageBroker;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
 public class ResponseHandlerFactory {

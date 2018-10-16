@@ -4,10 +4,7 @@ import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.MessageBroker;
 import com.semicolon.ds.core.RoutingTable;
-import com.sun.imageio.spi.RAFImageOutputStreamSpi;
 
-import javax.security.auth.callback.CallbackHandler;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
@@ -44,7 +41,12 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
     }
 
     @Override
-    public void handleRequest(ChannelMessage message) {
+    public void sendRequest(ChannelMessage message) {
+        try {
+            channelOut.put(message);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -81,20 +83,15 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         this.routingTable.print();
     }
 
-    public int sendPing(String address, int port) {
+    public void sendPing(String address, int port) {
         if (routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
             String payload = String.format(Constants.PING_FORMAT,
                     this.routingTable.getAddress(),
                     this.routingTable.getPort());
             String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
             ChannelMessage message = new ChannelMessage(address, port,rawMessage);
-            try {
-                channelOut.put(message);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            this.sendRequest(message);
         }
-        return routingTable.getCount();
     }
 
 

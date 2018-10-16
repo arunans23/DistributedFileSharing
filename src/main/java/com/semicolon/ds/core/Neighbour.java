@@ -15,7 +15,7 @@ public class Neighbour {
         return newN.getPort() == this.port & this.address.equals(newN.getAddress());
     }
 
-    public boolean eaquals (String address, int port) {
+    public boolean equals(String address, int port) {
         return this.address.equals(address) & this.port == port;
     }
 

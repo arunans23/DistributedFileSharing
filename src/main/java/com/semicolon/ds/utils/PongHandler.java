@@ -4,6 +4,7 @@ import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.MessageBroker;
 import com.semicolon.ds.core.RoutingTable;
 
+import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
@@ -51,7 +52,15 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
                 + " from: " + message.getAddress()
                 + " port: " + message.getPort());
 
-        this.routingTable.addNeighbour(message.getAddress(), message.getPort());
+        StringTokenizer stringToken = new StringTokenizer(message.getMessage(), " ");
+
+        String length = stringToken.nextToken();
+        String keyword = stringToken.nextToken();
+        String address = stringToken.nextToken().trim();
+        int port = Integer.parseInt(stringToken.nextToken().trim());
+
+        this.routingTable.addNeighbour(address, port);
+
         this.routingTable.print();
     }
 

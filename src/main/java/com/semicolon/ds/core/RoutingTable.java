@@ -4,9 +4,12 @@ package com.semicolon.ds.core;
 import com.semicolon.ds.Constants;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 
 public class RoutingTable {
+
+    private final Logger LOG = Logger.getLogger(RoutingTable.class.getName());
     private ArrayList<Neighbour> neighbours;
     private final String address;
     private final int port;
@@ -19,7 +22,7 @@ public class RoutingTable {
 
     public synchronized int addNeighbour(String address, int port) {
         for (Neighbour n: neighbours) {
-            if (n.eaquals(address, port)){
+            if (n.equals(address, port)){
                 return 0;
             }
         }
@@ -27,14 +30,15 @@ public class RoutingTable {
             return 0;
         }
         neighbours.add(new Neighbour(address, port));
+
+        LOG.info("Adding neighbour : " + address + ":" + port);
         return neighbours.size();
     }
 
     public synchronized int removeNeighbout(String address, int port) {
         Neighbour toRemove = null;
-        for (Neighbour n:
-             neighbours) {
-            if (n.eaquals(address, port)) {
+        for (Neighbour n: neighbours) {
+            if (n.equals(address, port)) {
                 toRemove = n;
             }
         }

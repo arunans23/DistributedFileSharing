@@ -13,12 +13,12 @@ public class ResponseHandlerFactory {
         switch (keyword){
             case "PING":
                 AbstractResponseHandler pingHandler = PingHandler.getInstance();
-                pingHandler.init(messageBroker);
+                pingHandler.init(messageBroker.getRoutingTable(), messageBroker.getChannelOut());
                 return pingHandler;
 
             case "PONG":
                 AbstractResponseHandler pongHandler = PongHandler.getInstance();
-                pongHandler.init(messageBroker);
+                pongHandler.init(messageBroker.getRoutingTable(), messageBroker.getChannelOut());
                 return pongHandler;
 
             default:

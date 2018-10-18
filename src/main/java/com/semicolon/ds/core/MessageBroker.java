@@ -42,7 +42,7 @@ public class MessageBroker extends Thread {
 
         this.pingHandler = PingHandler.getInstance();
 
-        this.pingHandler.init(this);
+        this.pingHandler.init(this.routingTable, this.channelOut);
 
         LOG.info("starting server");
     }

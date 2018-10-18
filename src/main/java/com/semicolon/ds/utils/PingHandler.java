@@ -13,7 +13,6 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
 
     private final Logger LOG = Logger.getLogger(PingHandler.class.getName());
 
-    private BlockingQueue<ChannelMessage> channelIn;
     private BlockingQueue<ChannelMessage> channelOut;
 
     private RoutingTable routingTable;
@@ -29,15 +28,6 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             pingHandler = new PingHandler();
         }
         return pingHandler;
-    }
-
-    @Override
-    public void init(MessageBroker messageBroker) {
-        if (this.channelIn == null || this.channelOut == null || this.routingTable == null) {
-            this.channelIn = messageBroker.getChannelIn();
-            this.channelOut = messageBroker.getChannelOut();
-            this.routingTable = messageBroker.getRoutingTable();
-        }
     }
 
     @Override
@@ -95,4 +85,9 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
     }
 
 
+    @Override
+    public void init(RoutingTable routingTable, BlockingQueue<ChannelMessage> channelOut) {
+        this.routingTable = routingTable;
+        this.channelOut = channelOut;
+    }
 }

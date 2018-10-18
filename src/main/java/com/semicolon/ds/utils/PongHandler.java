@@ -12,7 +12,6 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
 
     private final Logger LOG = Logger.getLogger(PongHandler.class.getName());
 
-    private BlockingQueue<ChannelMessage> channelIn;
     private BlockingQueue<ChannelMessage> channelOut;
 
     private RoutingTable routingTable;
@@ -30,16 +29,6 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
 
         return pongHandler;
     }
-
-    @Override
-    public void init(MessageBroker messageBroker) {
-        if (this.channelIn == null || this.channelOut == null || this.routingTable == null) {
-            this.channelIn = messageBroker.getChannelIn();
-            this.channelOut = messageBroker.getChannelOut();
-            this.routingTable = messageBroker.getRoutingTable();
-        }
-    }
-
 
     @Override
     public void sendRequest(ChannelMessage message) {
@@ -64,4 +53,9 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
         this.routingTable.print();
     }
 
+    @Override
+    public void init(RoutingTable routingTable, BlockingQueue<ChannelMessage> channelOut) {
+        this.routingTable = routingTable;
+        this.channelOut = channelOut;
+    }
 }

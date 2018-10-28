@@ -11,11 +11,12 @@ import java.util.UUID;
 public class App 
 {
   public static void main(String[] args) {
-    for (int i = 0; i < 10; i++) {
+
+    for (int i = 0; i < 1; i++) {
       try {
         String uniqueID = UUID.randomUUID().toString();
         GNode node = new GNode("node" + uniqueID);
-        node.register();
+        node.init();
 
       } catch (Exception e) {
         e.printStackTrace();

@@ -1,9 +1,9 @@
 package com.semicolon.ds.comms;
 
 public class ChannelMessage {
-    final String address;
-    final int port;
-    final String message;
+    private final String address;
+    private final int port;
+    private final String message;
 
     public ChannelMessage(String address, int port, String message) {
         this.address = address;

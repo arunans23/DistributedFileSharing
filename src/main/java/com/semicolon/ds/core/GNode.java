@@ -1,10 +1,13 @@
 package com.semicolon.ds.core;
 
-import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.BSClient;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class GNode {
@@ -18,28 +21,48 @@ public class GNode {
   private int port;
   private MessageBroker messageBroker;
 
-  public GNode(String userName) throws IOException {
+  public GNode (String userName) throws IOException {
+
+    try (final DatagramSocket socket = new DatagramSocket()) {
+      socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+      this.ipAddress = socket.getLocalAddress().getHostAddress();
+
+    } catch (Exception e) {
+      throw new RuntimeException("Could not find host address");
+    }
 
     this.userName = userName;
-    this.ipAddress = Constants.LOCALHOST;
     this.port = getFreePort();
 
     this.bsClient = new BSClient();
-    this.messageBroker = new MessageBroker(getFreePort());
+    this.messageBroker = new MessageBroker(ipAddress, port);
     messageBroker.start();
+
     LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
 
   }
 
-  public void register() {
+  public void init() {
+    List<InetSocketAddress> targets = this.register();
+    if (targets != null) {
+      for (InetSocketAddress target : targets) {
+        messageBroker.sendPing(target.getAddress().toString().substring(1), target.getPort());
+      }
+    }
+  }
+
+  private List<InetSocketAddress> register() {
+    List<InetSocketAddress> targets = null;
 
     try {
-      this.bsClient.register(this.userName, this.ipAddress, this.port);
+      targets = this.bsClient.register(this.userName, this.ipAddress, this.port);
 
     } catch (IOException e) {
-      LOG.info("Registering Gnode failed");
+      LOG.severe("Registering Gnode failed");
       e.printStackTrace();
     }
+    return targets;
+
   }
 
   public void unRegister() {
@@ -47,7 +70,7 @@ public class GNode {
       this.bsClient.unRegister(this.userName, this.ipAddress, this.port);
 
     } catch (IOException e) {
-      LOG.info("Un-Registering Gnode failed");
+      LOG.severe("Un-Registering Gnode failed");
       e.printStackTrace();
     }
   }
@@ -60,7 +83,7 @@ public class GNode {
     return ipAddress;
   }
 
-  public int getPort() {
+  public int getPort(){
     return port;
   }
 

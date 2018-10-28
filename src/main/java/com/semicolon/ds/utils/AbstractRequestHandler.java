@@ -2,8 +2,7 @@ package com.semicolon.ds.utils;
 
 import com.semicolon.ds.comms.ChannelMessage;
 
-import java.util.concurrent.BlockingQueue;
+public interface AbstractRequestHandler extends AbstractMessageHandler {
 
-public abstract class AbstractRequestHandler implements AbstractMessageHandler {
-    public abstract void handleRequest(BlockingQueue<ChannelMessage> chanelOut, ChannelMessage message);
+    void sendRequest(ChannelMessage message);
 }

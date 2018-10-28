@@ -4,14 +4,24 @@ package com.semicolon.ds.core;
 import com.semicolon.ds.Constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+
 
 
 public class RoutingTable {
-  private ArrayList<Neighbour> neighbours;
 
-  public RoutingTable() {
-    this.neighbours = new ArrayList<>();
+  private final Logger LOG = Logger.getLogger(RoutingTable.class.getName());
+  private ArrayList<Neighbour> neighbours;
+  private final String address;
+  private final int port;
+
+  public RoutingTable(String address, int port) {
+    Neighbour neighbour = new Neighbour(address, port);
+    this.address = address;
+    this.port = port;
+    this.neighbours = new ArrayList<>(Arrays.asList(neighbour));
   }
 
   /**
@@ -21,7 +31,8 @@ public class RoutingTable {
    * @param port
    * @return the number of neighbours.
    */
-  public int addNeighbour(String address, int port) {
+
+  public synchronized int addNeighbour(String address, int port) {
     if (address == null || address.isEmpty()) {
       return neighbours.size();
     }
@@ -35,6 +46,8 @@ public class RoutingTable {
       return neighbours.size();
     }
     neighbours.add(new Neighbour(address, port));
+
+    LOG.info("Adding neighbour : " + address + ":" + port);
     return neighbours.size();
   }
 
@@ -45,7 +58,7 @@ public class RoutingTable {
    * @param port
    * @return the number of neighbours.
    */
-  public int removeNeighbour(String address, int port) {
+  public synchronized int removeNeighbour(String address, int port) {
     Neighbour toRemove = null;
     for (Neighbour n : neighbours) {
       if (n.equals(address, port)) {
@@ -88,4 +101,11 @@ public class RoutingTable {
     return list;
   }
 
+  public String getAddress() {
+    return address;
+  }
+
+  public int getPort() {
+    return port;
+  }
 }

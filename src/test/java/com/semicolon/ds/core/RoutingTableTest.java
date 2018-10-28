@@ -18,81 +18,71 @@ public class RoutingTableTest {
 
   @Test
   public void addNeighboursTest_oneNeighbour() {
-    RoutingTable table = new RoutingTable();
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
     int count = table.addNeighbour("192.168.0.1", 5466);
-    assertEquals(1, count);
+    assertEquals(2, count);
   }
 
   @Test
   public void addNeighboursTest_multipleNeighbours() {
-    RoutingTable table = new RoutingTable();
-    assertEquals(1, table.addNeighbour("192.168.1.1", 5466));
-    assertEquals(2, table.addNeighbour("192.168.1.2", 5467));
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
+    assertEquals(2, table.addNeighbour("192.168.1.1", 5466));
+    assertEquals(3, table.addNeighbour("192.168.1.2", 5467));
   }
 
   @Test
   public void addNeighboursTest_nullAddress() {
-    RoutingTable table = new RoutingTable();
-    assertEquals(0, table.addNeighbour(null, 5466));
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
+    assertEquals(1, table.addNeighbour(null, 5466));
   }
 
   @Test
   public void addNeighbourTest_sameAddress(){
-    RoutingTable table = new RoutingTable();
-    assertEquals(1, table.addNeighbour("192.168.1.1", 5466));
-    assertEquals(1, table.addNeighbour("192.168.1.1", 5466));
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
+    assertEquals(2, table.addNeighbour("192.168.1.1", 5466));
+    assertEquals(2, table.addNeighbour("192.168.1.1", 5466));
   }
 
   @Test
   public void addNeighbourTest_maxNeighboursReached() {
-    RoutingTable table = new RoutingTable();
-    assertEquals(1, table.addNeighbour("192.168.1.1", 5466));
-    assertEquals(2, table.addNeighbour("192.168.1.2", 5467));
-    assertEquals(3, table.addNeighbour("192.168.1.3", 5468));
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
+    assertEquals(2, table.addNeighbour("192.168.1.1", 5466));
+    assertEquals(3, table.addNeighbour("192.168.1.2", 5467));
+    assertEquals(4, table.addNeighbour("192.168.1.3", 5468));
     assertEquals(4, table.addNeighbour("192.168.1.4", 5469));
-    assertEquals(4, table.addNeighbour("192.168.1.5", 5470));
   }
 
   @Test
   public void removeNeighbour_oneNeighbourTest() {
-    RoutingTable table = new RoutingTable();
-    assertEquals(1, table.addNeighbour("192.168.1.1", 5466));
-    assertEquals(0, table.removeNeighbour("192.168.1.1", 5466));
-  }
-
-  @Test
-  public void removeNeighbour_nullNeighbourListTest() {
-    RoutingTable table = new RoutingTable();
-    assertEquals(0, table.removeNeighbour("192.168.1.1", 5466));
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
+    assertEquals(0, table.removeNeighbour("192.168.1.0", 5466));
   }
 
   @Test
   public void removeNeighbour_sameAddressDifferentPortTest() {
-    RoutingTable table = new RoutingTable();
-    assertEquals(1, table.addNeighbour("192.168.1.1", 5466));
-    assertEquals(1, table.removeNeighbour("192.168.1.1", 5467));
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
+    assertEquals(1, table.removeNeighbour("192.168.1.0", 5467));
   }
 
   @Test
   public void getCount_addNeighboursTest() {
-    RoutingTable table = new RoutingTable();
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
     assertEquals(table.addNeighbour("192.168.1.1", 5466), table.getCount());
     assertEquals(table.addNeighbour("192.168.1.2", 5466), table.getCount());
     assertEquals(table.addNeighbour("192.168.1.3", 5466), table.getCount());
     assertEquals(table.addNeighbour("192.168.1.4", 5466), table.getCount());
-    assertEquals(table.addNeighbour("192.168.1.5", 5466), table.getCount());
   }
 
   @Test
   public void getCount_removeNeighboursTest() {
-    RoutingTable table = new RoutingTable();
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
     assertEquals(table.addNeighbour("192.168.1.1", 5466), table.getCount());
     assertEquals(table.removeNeighbour("192.168.1.1", 5466), table.getCount());
   }
 
   @Test
   public void toList_addNeighboursTest() {
-    RoutingTable table = new RoutingTable();
+    RoutingTable table = new RoutingTable("192.168.1.0", 5466);
     assertEquals(table.toList().size(), table.getCount());
     table.addNeighbour("192.168.1.1", 5466);
     assertEquals(table.toList().size(), table.getCount());

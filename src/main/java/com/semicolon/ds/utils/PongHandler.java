@@ -3,6 +3,7 @@ package com.semicolon.ds.utils;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.MessageBroker;
 import com.semicolon.ds.core.RoutingTable;
+import com.semicolon.ds.core.TimeoutManager;
 
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
@@ -17,6 +18,7 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
     private RoutingTable routingTable;
 
     private static PongHandler pongHandler;
+    private TimeoutManager timeoutManager;
 
     private PongHandler(){
 
@@ -54,8 +56,12 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
     }
 
     @Override
-    public void init(RoutingTable routingTable, BlockingQueue<ChannelMessage> channelOut) {
+    public void init(
+            RoutingTable routingTable,
+            BlockingQueue<ChannelMessage> channelOut,
+            TimeoutManager timeoutManager) {
         this.routingTable = routingTable;
         this.channelOut = channelOut;
+        this.timeoutManager = timeoutManager;
     }
 }

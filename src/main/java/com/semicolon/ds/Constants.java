@@ -21,4 +21,7 @@ public class Constants {
     public static final int MIN_NEIGHBOURS = 2;
     public static final int MAX_NEIGHBOURS = 4;
 
+    public static final int PING_TIMEOUT = 5000;
+    public static final int PING_INTERVAL = 10000;
+
 }

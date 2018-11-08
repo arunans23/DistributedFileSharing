@@ -76,14 +76,13 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
     }
 
     public void sendPing(String address, int port) {
-        if (routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
-            String payload = String.format(Constants.PING_FORMAT,
-                    this.routingTable.getAddress(),
-                    this.routingTable.getPort());
-            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
-            ChannelMessage message = new ChannelMessage(address, port,rawMessage);
-            this.sendRequest(message);
-        }
+        String payload = String.format(Constants.PING_FORMAT,
+                this.routingTable.getAddress(),
+                this.routingTable.getPort());
+        String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
+        ChannelMessage message = new ChannelMessage(address, port,rawMessage);
+        this.sendRequest(message);
+
     }
 
 

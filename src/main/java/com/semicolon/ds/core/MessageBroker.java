@@ -6,12 +6,15 @@ import com.semicolon.ds.comms.UDPServer;
 import com.semicolon.ds.utils.AbstractResponseHandler;
 import com.semicolon.ds.utils.PingHandler;
 import com.semicolon.ds.utils.ResponseHandlerFactory;
+import com.semicolon.ds.utils.TimeoutCallback;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class MessageBroker extends Thread {
@@ -27,8 +30,9 @@ public class MessageBroker extends Thread {
     private BlockingQueue<ChannelMessage> channelOut;
 
     private RoutingTable routingTable;
-
     private PingHandler pingHandler;
+
+    private TimeoutManager timeoutManager = new TimeoutManager();
 
     public MessageBroker(String address, int port) throws SocketException {
         channelIn = new LinkedBlockingQueue<ChannelMessage>();
@@ -42,9 +46,15 @@ public class MessageBroker extends Thread {
 
         this.pingHandler = PingHandler.getInstance();
 
-        this.pingHandler.init(this.routingTable, this.channelOut);
+        this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
 
         LOG.info("starting server");
+        timeoutManager.registerRequest("routinePing", 10000, new TimeoutCallback() {
+            @Override
+            public void onTimeout(String messageId) {
+                sendRoutinePing();
+            }
+        });
     }
 
     @Override
@@ -57,22 +67,24 @@ public class MessageBroker extends Thread {
     public void process() {
         while (process) {
             try {
-                ChannelMessage message = channelIn.take();
+                ChannelMessage message = channelIn.poll(100, TimeUnit.MILLISECONDS);
+                if (message != null) {
+                    LOG.info("Received Message: " + message.getMessage()
+                            + " from: " + message.getAddress()
+                            + " port: " + message.getPort());
 
-                LOG.info("Received Message: " + message.getMessage()
-                        + " from: " + message.getAddress()
-                        + " port: " + message.getPort());
+                    AbstractResponseHandler abstractResponseHandler
+                            = ResponseHandlerFactory.getResponseHandler(
+                            message.getMessage().split(" ")[1],
+                            this
+                    );
 
-                AbstractResponseHandler abstractResponseHandler
-                        = ResponseHandlerFactory.getResponseHandler(
-                                message.getMessage().split(" ")[1],
-                                this
-                        );
+                    if (abstractResponseHandler != null){
+                        abstractResponseHandler.handleResponse(message);
+                    }
 
-                if (abstractResponseHandler != null){
-                    abstractResponseHandler.handleResponse(message);
                 }
-
+                timeoutManager.checkForTimeout();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -96,7 +108,24 @@ public class MessageBroker extends Thread {
         return channelOut;
     }
 
+    public TimeoutManager getTimeoutManager() {
+        return timeoutManager;
+    }
+
     public RoutingTable getRoutingTable() {
         return routingTable;
     }
+
+
+    private void sendRoutinePing() {
+        LOG.info("sending rPing");
+        ArrayList<String> neighbours = routingTable.toList();
+        for (String n: neighbours) {
+            String address = n.split(":")[0];
+            int port = Integer.valueOf(n.split(":")[1]);
+            sendPing(address, port);
+
+        }
+    }
+
 }

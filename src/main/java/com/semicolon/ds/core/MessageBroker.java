@@ -6,6 +6,7 @@ import com.semicolon.ds.comms.UDPServer;
 import com.semicolon.ds.utils.AbstractResponseHandler;
 import com.semicolon.ds.utils.PingHandler;
 import com.semicolon.ds.utils.ResponseHandlerFactory;
+import com.semicolon.ds.utils.SearchQueryHandler;
 import com.semicolon.ds.utils.TimeoutCallback;
 
 import java.net.DatagramSocket;
@@ -31,6 +32,7 @@ public class MessageBroker extends Thread {
 
     private RoutingTable routingTable;
     private PingHandler pingHandler;
+    private SearchQueryHandler searchQueryHandler;
 
     private TimeoutManager timeoutManager = new TimeoutManager();
 
@@ -47,6 +49,9 @@ public class MessageBroker extends Thread {
         this.pingHandler = PingHandler.getInstance();
 
         this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
+
+        this.searchQueryHandler = SearchQueryHandler.getInstance();
+        this.searchQueryHandler.init(routingTable, channelOut, timeoutManager);
 
         LOG.info("starting server");
         timeoutManager.registerRequest("routinePing", 10000, new TimeoutCallback() {
@@ -67,24 +72,24 @@ public class MessageBroker extends Thread {
     public void process() {
         while (process) {
             try {
-                ChannelMessage message = channelIn.poll(100, TimeUnit.MILLISECONDS);
-                if (message != null) {
-                    LOG.info("Received Message: " + message.getMessage()
-                            + " from: " + message.getAddress()
-                            + " port: " + message.getPort());
+                ChannelMessage message = channelIn.take();
 
-                    AbstractResponseHandler abstractResponseHandler
-                            = ResponseHandlerFactory.getResponseHandler(
-                            message.getMessage().split(" ")[1],
-                            this
-                    );
+                LOG.info("Received Message: " + message.getMessage()
+                        + " from: " + message.getAddress()
+                        + " port: " + message.getPort());
 
-                    if (abstractResponseHandler != null){
-                        abstractResponseHandler.handleResponse(message);
-                    }
+                AbstractResponseHandler abstractResponseHandler
+                        = ResponseHandlerFactory.getResponseHandler(
+                                message.getMessage().split(" ")[1],
+                                this
+                        );
 
+                if (abstractResponseHandler != null){
+                    abstractResponseHandler.handleResponse(message);
                 }
+
                 timeoutManager.checkForTimeout();
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -98,6 +103,10 @@ public class MessageBroker extends Thread {
 
     public void sendPing(String address, int port) {
         this.pingHandler.sendPing(address, port);
+    }
+
+    public void doSearch(String keyword){
+        this.searchQueryHandler.doSearch(keyword);
     }
 
     public BlockingQueue<ChannelMessage> getChannelIn() {

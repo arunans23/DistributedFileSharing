@@ -29,6 +29,13 @@ public class ResponseHandlerFactory {
                 );
                 return pongHandler;
 
+            case "SER":
+                AbstractResponseHandler searchQueryHandler = SearchQueryHandler.getInstance();
+                searchQueryHandler.init(messageBroker.getRoutingTable(),
+                        messageBroker.getChannelOut(),
+                        messageBroker.getTimeoutManager());
+                return searchQueryHandler;
+
             default:
                 LOG.severe("Unknown keyword received in Response Handler : " + keyword);
                 return null;

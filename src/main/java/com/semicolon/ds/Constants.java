@@ -3,7 +3,8 @@ package com.semicolon.ds;
 public class Constants {
 
     public static final String BS_PROPERTIES = "Bootstrap.properties";
-//    public static final String LOCALHOST = "127.0.0.1";
+    public static final String LOCALHOST = "127.0.0.1";
+    public static final int DEFAULT_PORT = 55555;
 
     public static final String MSG_FORMAT = "%04d %s";
 
@@ -16,6 +17,9 @@ public class Constants {
     public static final String PING_FORMAT = "PING %s %s";
     public static final String PONG_FORMAT = "PONG %s %s";
 
+    public static final String QUERY_FORMAT = "SER %s %s %s %s";
+    public static final String QUERY_HIT_FORMAT = "SEROK %s %s %s %s";
+
     public static final int TIMEOUT_REG = 10000;
 
     public static final int MIN_NEIGHBOURS = 2;
@@ -23,5 +27,7 @@ public class Constants {
 
     public static final int PING_TIMEOUT = 5000;
     public static final int PING_INTERVAL = 10000;
+
+    public static final int HOP_COUNT = 5;
 
 }

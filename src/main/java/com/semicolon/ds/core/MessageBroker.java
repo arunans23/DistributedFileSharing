@@ -72,24 +72,24 @@ public class MessageBroker extends Thread {
     public void process() {
         while (process) {
             try {
-                ChannelMessage message = channelIn.take();
+                ChannelMessage message = channelIn.poll(100, TimeUnit.MILLISECONDS);
+                if (message != null) {
+                    LOG.info("Received Message: " + message.getMessage()
+                            + " from: " + message.getAddress()
+                            + " port: " + message.getPort());
 
-                LOG.info("Received Message: " + message.getMessage()
-                        + " from: " + message.getAddress()
-                        + " port: " + message.getPort());
+                    AbstractResponseHandler abstractResponseHandler
+                            = ResponseHandlerFactory.getResponseHandler(
+                            message.getMessage().split(" ")[1],
+                            this
+                    );
 
-                AbstractResponseHandler abstractResponseHandler
-                        = ResponseHandlerFactory.getResponseHandler(
-                                message.getMessage().split(" ")[1],
-                                this
-                        );
+                    if (abstractResponseHandler != null){
+                        abstractResponseHandler.handleResponse(message);
+                    }
 
-                if (abstractResponseHandler != null){
-                    abstractResponseHandler.handleResponse(message);
                 }
-
                 timeoutManager.checkForTimeout();
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

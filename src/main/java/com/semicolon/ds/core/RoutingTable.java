@@ -23,7 +23,8 @@ public class RoutingTable {
     public synchronized int addNeighbour(String address, int port) {
         for (Neighbour n: neighbours) {
             if (n.equals(address, port)){
-                return 0;
+                n.Ping();
+                return neighbours.size();
             }
         }
         if (neighbours.size() >= Constants.MAX_NEIGHBOURS) {
@@ -64,7 +65,7 @@ public class RoutingTable {
         }
     }
 
-    public synchronized ArrayList toList() {
+    public synchronized ArrayList<String> toList() {
         ArrayList<String> list = new ArrayList<>();
         for (Neighbour n: neighbours) {
             list.add(n.toString());

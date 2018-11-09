@@ -128,7 +128,6 @@ public class MessageBroker extends Thread {
 
 
     private void sendRoutinePing() {
-        LOG.info("sending rPing");
         ArrayList<String> neighbours = routingTable.toList();
         for (String n: neighbours) {
             String address = n.split(":")[0];

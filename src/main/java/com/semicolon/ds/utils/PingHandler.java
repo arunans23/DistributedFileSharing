@@ -22,6 +22,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
     private RoutingTable routingTable;
     private TimeoutManager timeoutManager;
     private Map<String, Integer> pingFailureCount = new HashMap<String, Integer>();
+    private TimeoutCallback callback = new pingTimeoutCallback();
 
     private PingHandler() {
         this.initiated = true;
@@ -79,7 +80,11 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         this.pingFailureCount.putIfAbsent(
                 String.format(Constants.PING_MESSAGE_ID_FORMAT, address, port),
                 0);
-
+        this.timeoutManager.registerRequest(
+                String.format(Constants.PING_MESSAGE_ID_FORMAT, address, port),
+                Constants.PING_TIMEOUT,
+                this.callback
+                );
         this.sendRequest(message);
 
     }
@@ -90,11 +95,10 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             RoutingTable routingTable,
             BlockingQueue<ChannelMessage> channelOut,
             TimeoutManager timeoutManager) {
-        if(!initiated) {
             this.routingTable = routingTable;
             this.channelOut = channelOut;
             this.timeoutManager = timeoutManager;
-        }
+
     }
 
     private class pingTimeoutCallback implements TimeoutCallback {
@@ -103,6 +107,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         public void onTimeout(String messageId) {
             pingFailureCount.put(messageId,pingFailureCount.get(messageId) + 1);
             if(pingFailureCount.get(messageId) == Constants.PING_RETRY) {
+                LOG.info("neighbour lost :( =>" + messageId);
                 routingTable.removeNeighbour(
                         messageId.split(":")[1],
                         Integer.valueOf(messageId.split(":")[2]));

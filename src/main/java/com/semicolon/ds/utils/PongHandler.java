@@ -1,5 +1,6 @@
 package com.semicolon.ds.utils;
 
+import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.MessageBroker;
 import com.semicolon.ds.core.RoutingTable;
@@ -50,6 +51,7 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
         String address = stringToken.nextToken().trim();
         int port = Integer.parseInt(stringToken.nextToken().trim());
 
+        this.timeoutManager.registerResponse(String.format(Constants.PING_MESSAGE_ID_FORMAT,address,port));
         this.routingTable.addNeighbour(address, port);
 
         this.routingTable.print();

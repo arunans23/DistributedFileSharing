@@ -1,5 +1,6 @@
 package com.semicolon.ds.core;
 
+import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.comms.UDPClient;
 import com.semicolon.ds.comms.UDPServer;
@@ -49,7 +50,7 @@ public class MessageBroker extends Thread {
         this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
 
         LOG.info("starting server");
-        timeoutManager.registerRequest("routinePing", 10000, new TimeoutCallback() {
+        timeoutManager.registerRequest(Constants.R_PING_MESSAGE_ID, Constants.PING_INTERVAL, new TimeoutCallback() {
             @Override
             public void onTimeout(String messageId) {
                 sendRoutinePing();

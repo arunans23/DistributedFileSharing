@@ -16,6 +16,11 @@ public class Constants {
     public static final String PING_FORMAT = "PING %s %s";
     public static final String PONG_FORMAT = "PONG %s %s";
 
+    public static final String BPING_FORMAT = "BPING %s %s";
+    public static final String BPONG_FORMAT = "BPONG %s %s";
+
+    public static final String PING_MESSAGE_ID_FORMAT = "PINGID:%s:%s";
+
     public static final int TIMEOUT_REG = 10000;
 
     public static final int MIN_NEIGHBOURS = 2;
@@ -23,5 +28,8 @@ public class Constants {
 
     public static final int PING_TIMEOUT = 5000;
     public static final int PING_INTERVAL = 10000;
+    public static final int PING_RETRY = 3;
+
+    public static final String R_PING_MESSAGE_ID = "rPingMessage";
 
 }

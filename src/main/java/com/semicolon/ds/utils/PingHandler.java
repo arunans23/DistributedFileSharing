@@ -5,6 +5,8 @@ import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
@@ -13,16 +15,16 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
 
     private final Logger LOG = Logger.getLogger(PingHandler.class.getName());
 
-    private BlockingQueue<ChannelMessage> channelOut;
-
-    private RoutingTable routingTable;
-
     private static PingHandler pingHandler;
 
+    private boolean initiated;
+    private BlockingQueue<ChannelMessage> channelOut;
+    private RoutingTable routingTable;
     private TimeoutManager timeoutManager;
+    private Map<String, Integer> pingFailureCount = new HashMap<String, Integer>();
 
     private PingHandler() {
-
+        this.initiated = true;
     }
 
     public synchronized static PingHandler getInstance() {
@@ -63,15 +65,8 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
             ChannelMessage outGoingMsg = new ChannelMessage(address,
                     port, rawMessage);
-
-            try {
-                this.channelOut.put(outGoingMsg);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            this.sendRequest(outGoingMsg);
         }
-
         this.routingTable.print();
     }
 
@@ -81,6 +76,10 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                 this.routingTable.getPort());
         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
         ChannelMessage message = new ChannelMessage(address, port,rawMessage);
+        this.pingFailureCount.putIfAbsent(
+                String.format(Constants.PING_MESSAGE_ID_FORMAT, address, port),
+                0);
+
         this.sendRequest(message);
 
     }
@@ -91,8 +90,23 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             RoutingTable routingTable,
             BlockingQueue<ChannelMessage> channelOut,
             TimeoutManager timeoutManager) {
-        this.routingTable = routingTable;
-        this.channelOut = channelOut;
-        this.timeoutManager = timeoutManager;
+        if(!initiated) {
+            this.routingTable = routingTable;
+            this.channelOut = channelOut;
+            this.timeoutManager = timeoutManager;
+        }
+    }
+
+    private class pingTimeoutCallback implements TimeoutCallback {
+
+        @Override
+        public void onTimeout(String messageId) {
+            pingFailureCount.put(messageId,pingFailureCount.get(messageId) + 1);
+            if(pingFailureCount.get(messageId) == Constants.PING_RETRY) {
+                routingTable.removeNeighbour(
+                        messageId.split(":")[1],
+                        Integer.valueOf(messageId.split(":")[2]));
+            }
+        }
     }
 }

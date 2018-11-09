@@ -1,5 +1,6 @@
 package com.semicolon.ds.core;
 
+import com.semicolon.ds.Constants;
 import com.semicolon.ds.utils.TimeoutCallback;
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.logging.Logger;
 
 public class TimeoutManager {
     private final Logger LOG = Logger.getLogger(TimeoutManager.class.getName());
-    Map<String, TimeoutCallbackMap> requests = new HashMap<String, TimeoutCallbackMap>();
+    private Map<String, TimeoutCallbackMap> requests = new HashMap<String, TimeoutCallbackMap>();
 
     public void registerRequest(String messaageId, long timeout, TimeoutCallback callback) {
         requests.put(messaageId, new TimeoutCallbackMap(timeout, callback));
@@ -21,7 +22,7 @@ public class TimeoutManager {
     public void checkForTimeout() {
         for (String messageId: requests.keySet()) {
             if(requests.get(messageId).checkTimeout(messageId)) {
-                if(messageId.equals("routinePing")) {
+                if(messageId.equals(Constants.R_PING_MESSAGE_ID)) {
                     requests.get(messageId).timeoutTime = requests.get(messageId).timeoutTime
                             + requests.get(messageId).timeout;
                 }else {

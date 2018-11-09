@@ -36,7 +36,7 @@ public class RoutingTable {
         return neighbours.size();
     }
 
-    public synchronized int removeNeighbout(String address, int port) {
+    public synchronized int removeNeighbour(String address, int port) {
         Neighbour toRemove = null;
         for (Neighbour n: neighbours) {
             if (n.equals(address, port)) {

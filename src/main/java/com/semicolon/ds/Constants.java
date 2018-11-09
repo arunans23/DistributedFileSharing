@@ -31,4 +31,6 @@ public class Constants {
 
     public static final String FILE_NAMES = "FileNames.txt";
 
+    public static final String PING_MESSAGE_ID_FORMAT = "PINGID:%s:%s";
+
 }

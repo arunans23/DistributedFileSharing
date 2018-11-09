@@ -19,6 +19,8 @@ public class Constants {
     public static final String QUERY_FORMAT = "SER %s %s %s %s";
     public static final String QUERY_HIT_FORMAT = "SEROK %s %s %s %s %s";
 
+    public static final String ENCODE_CLASS = "UTF-8";
+
     public static final int TIMEOUT_REG = 10000;
 
     public static final int MIN_NEIGHBOURS = 2;

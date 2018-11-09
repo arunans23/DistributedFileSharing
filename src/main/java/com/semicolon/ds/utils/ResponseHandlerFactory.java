@@ -36,6 +36,13 @@ public class ResponseHandlerFactory {
                         messageBroker.getTimeoutManager());
                 return searchQueryHandler;
 
+            case "SEROK":
+                AbstractResponseHandler queryHitHandler = QueryHitHandler.getInstance();
+                queryHitHandler.init(messageBroker.getRoutingTable(),
+                        messageBroker.getChannelOut(),
+                        messageBroker.getTimeoutManager());
+                return queryHitHandler;
+
             default:
                 LOG.severe("Unknown keyword received in Response Handler : " + keyword);
                 return null;

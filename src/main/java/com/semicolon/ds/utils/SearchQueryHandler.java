@@ -7,6 +7,9 @@ import com.semicolon.ds.core.Neighbour;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -39,24 +42,39 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
         return searchQueryHandler;
     }
 
-    public void doSearch(String keyword){
-        ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
+    public void doSearch(String keyword) {
+//        ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
+//
+//        for(Neighbour neighbour: neighbours){
+//            String payload = String.format(Constants.QUERY_FORMAT,
+//                    this.routingTable.getAddress(),
+//                    this.routingTable.getPort(),
+//                    keyword,
+//                    Constants.HOP_COUNT);
+//
+//            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+//
+//            ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
+//                    neighbour.getPort(),
+//                    rawMessage);
+//
+//            this.sendRequest(queryMessage);
+//        }
 
-        for(Neighbour neighbour: neighbours){
-            String payload = String.format(Constants.QUERY_FORMAT,
-                    this.routingTable.getAddress(),
-                    this.routingTable.getPort(),
-                    keyword,
-                    Constants.HOP_COUNT);
+        String payload = String.format(Constants.QUERY_FORMAT,
+                this.routingTable.getAddress(),
+                this.routingTable.getPort(),
+                StringEncoderDecoder.encode(keyword),
+                Constants.HOP_COUNT);
 
-            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+        String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
 
-            ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
-                    neighbour.getPort(),
-                    rawMessage);
+        ChannelMessage initialMessage = new ChannelMessage(
+                this.routingTable.getAddress(),
+                this.routingTable.getPort(),
+                rawMessage);
 
-            this.sendRequest(queryMessage);
-        }
+        this.handleResponse(initialMessage);
     }
 
     @Override
@@ -89,8 +107,8 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
         String address = stringToken.nextToken().trim();
         int port = Integer.parseInt(stringToken.nextToken().trim());
 
-        String fileName = stringToken.nextToken();
-        int hops = Integer.parseInt(stringToken.nextToken());
+        String fileName = StringEncoderDecoder.decode(stringToken.nextToken().trim());
+        int hops = Integer.parseInt(stringToken.nextToken().trim());
 
         //search for the file in the current node
         Set<String> resultSet = fileManager.searchForFile(fileName);
@@ -103,8 +121,9 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
             Iterator<String> itr = resultSet.iterator();
 
             while(itr.hasNext()){
-                fileNamesString.append(itr.next() + " ");
+                fileNamesString.append(StringEncoderDecoder.encode(itr.next()) + " ");
             }
+
             String payload = String.format(Constants.QUERY_HIT_FORMAT,
                     fileNamesCount,
                     routingTable.getAddress(),

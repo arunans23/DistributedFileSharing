@@ -20,6 +20,15 @@ public class ResponseHandlerFactory {
                 );
                 return pingHandler;
 
+            case "BPING":
+                AbstractResponseHandler bPingHandler = PingHandler.getInstance();
+                bPingHandler.init(
+                        messageBroker.getRoutingTable(),
+                        messageBroker.getChannelOut(),
+                        messageBroker.getTimeoutManager()
+                );
+                return bPingHandler;
+
             case "PONG":
                 AbstractResponseHandler pongHandler = PongHandler.getInstance();
                 pongHandler.init(
@@ -28,6 +37,15 @@ public class ResponseHandlerFactory {
                         messageBroker.getTimeoutManager()
                 );
                 return pongHandler;
+
+            case "BPONG":
+                AbstractResponseHandler bpongHandler = PongHandler.getInstance();
+                bpongHandler.init(
+                        messageBroker.getRoutingTable(),
+                        messageBroker.getChannelOut(),
+                        messageBroker.getTimeoutManager()
+                );
+                return bpongHandler;
 
             case "SER":
                 AbstractResponseHandler searchQueryHandler = SearchQueryHandler.getInstance();

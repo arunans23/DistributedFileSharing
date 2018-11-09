@@ -5,6 +5,7 @@ import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -46,9 +47,11 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
 
     @Override
     public void handleResponse(ChannelMessage message) {
-        LOG.info("Received PING : " + message.getMessage()
-                + " from: " + message.getAddress()
-                + " port: " + message.getPort());
+
+
+//        LOG.info("Received PING : " + message.getMessage()
+//                + " from: " + message.getAddress()
+//                + " port: " + message.getPort());
 
         StringTokenizer stringToken = new StringTokenizer(message.getMessage(), " ");
 
@@ -56,18 +59,49 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         String keyword = stringToken.nextToken();
         String address = stringToken.nextToken().trim();
         int port = Integer.parseInt(stringToken.nextToken().trim());
+        if(keyword.equals("BPING")) {
+            int hops = Integer.parseInt(stringToken.nextToken().trim());
 
-        int result = this.routingTable.addNeighbour(address, port);
+            //if a neighbour sends a bping, pass it to the other neighbours
+            if(routingTable.isANeighbour(address, port)) {
+                if(hops > 0) {
+                    forwardBPing(address, port, hops-1);
+                }
+            } else {
 
-        if (result != 0){
-            String payload = String.format(Constants.PONG_FORMAT,
-                    this.routingTable.getAddress(), this.routingTable.getPort());
+                //check if we can add another neighbour
+                int result = this.routingTable.getCount();
+                if (result < Constants.MAX_NEIGHBOURS) {
+                    //if can add, then send a bpong
+                    String payload = String.format(Constants.BPONG_FORMAT,
+                            this.routingTable.getAddress(), this.routingTable.getPort());
 
-            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-            ChannelMessage outGoingMsg = new ChannelMessage(address,
-                    port, rawMessage);
-            this.sendRequest(outGoingMsg);
+                    String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+                    ChannelMessage outGoingMsg = new ChannelMessage(address,
+                            port, rawMessage);
+                    this.sendRequest(outGoingMsg);
+                } else {
+                    //otherwise send it to the neighbours
+                    if(hops > 0) {
+                        forwardBPing(address, port, hops-1);
+                    }
+                }
+            }
+
+        } else {
+            int result = this.routingTable.addNeighbour(address, port);
+
+            if (result != 0){
+                String payload = String.format(Constants.PONG_FORMAT,
+                        this.routingTable.getAddress(), this.routingTable.getPort());
+
+                String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+                ChannelMessage outGoingMsg = new ChannelMessage(address,
+                        port, rawMessage);
+                this.sendRequest(outGoingMsg);
+            }
         }
+
         this.routingTable.print();
     }
 
@@ -89,6 +123,39 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
 
     }
 
+    private void sendBPing(String address, int port) {
+        ArrayList<String> targets = routingTable.getOtherNeighbours(address,port);
+        String payload = String.format(Constants.BPING_FORMAT,
+                this.routingTable.getAddress(),
+                this.routingTable.getPort(),
+                Constants.BPING_HOP_LIMIT);
+        String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
+        for (String target: targets) {
+            ChannelMessage message = new ChannelMessage(
+                    target.split(":")[0],
+                    Integer.parseInt(target.split(":")[1]), rawMessage);
+            sendRequest(message);
+        }
+    }
+
+    private void forwardBPing(
+            String originAddress,
+            int originPort,
+            int currentHop) {
+        ArrayList<String> targets = routingTable.getOtherNeighbours(originAddress,originPort);
+        String payload = String.format(Constants.BPING_FORMAT,
+                originAddress,
+                originPort,
+                currentHop);
+        String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
+        for (String target: targets) {
+            ChannelMessage message = new ChannelMessage(
+                    target.split(":")[0],
+                    Integer.parseInt(target.split(":")[1]), rawMessage);
+            sendRequest(message);
+        }
+    }
+
 
     @Override
     public void init(
@@ -106,12 +173,25 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         @Override
         public void onTimeout(String messageId) {
             pingFailureCount.put(messageId,pingFailureCount.get(messageId) + 1);
-            if(pingFailureCount.get(messageId) == Constants.PING_RETRY) {
+            if(pingFailureCount.get(messageId) >= Constants.PING_RETRY) {
                 LOG.info("neighbour lost :( =>" + messageId);
                 routingTable.removeNeighbour(
                         messageId.split(":")[1],
                         Integer.valueOf(messageId.split(":")[2]));
             }
+
+            if (routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
+                sendBPing(
+                        messageId.split(":")[1],
+                        Integer.valueOf(messageId.split(":")[2]));
+            }
+        }
+
+        @Override
+        public void onResponse(String messageId) {
+            pingFailureCount.put(messageId, 0);
         }
     }
+
+
 }

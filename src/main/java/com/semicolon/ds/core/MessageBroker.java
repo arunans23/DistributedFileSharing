@@ -60,6 +60,11 @@ public class MessageBroker extends Thread {
             public void onTimeout(String messageId) {
                 sendRoutinePing();
             }
+
+            @Override
+            public void onResponse(String messageId) {
+            }
+
         });
     }
 

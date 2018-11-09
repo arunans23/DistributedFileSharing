@@ -40,9 +40,9 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
 
     @Override
     public void handleResponse(ChannelMessage message) {
-        LOG.info("Received PONG : " + message.getMessage()
-                + " from: " + message.getAddress()
-                + " port: " + message.getPort());
+//        LOG.info("Received PONG : " + message.getMessage()
+//                + " from: " + message.getAddress()
+//                + " port: " + message.getPort());
 
         StringTokenizer stringToken = new StringTokenizer(message.getMessage(), " ");
 
@@ -50,11 +50,18 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
         String keyword = stringToken.nextToken();
         String address = stringToken.nextToken().trim();
         int port = Integer.parseInt(stringToken.nextToken().trim());
+        if(keyword.equals("BPONG")) {
+            if(routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
+                this.routingTable.addNeighbour(address, port);
+                this.routingTable.print();
+            }
+        } else {
+            this.timeoutManager.registerResponse(String.format(Constants.PING_MESSAGE_ID_FORMAT,address,port));
+            this.routingTable.addNeighbour(address, port);
 
-        this.timeoutManager.registerResponse(String.format(Constants.PING_MESSAGE_ID_FORMAT,address,port));
-        this.routingTable.addNeighbour(address, port);
+            this.routingTable.print();
+        }
 
-        this.routingTable.print();
     }
 
     @Override

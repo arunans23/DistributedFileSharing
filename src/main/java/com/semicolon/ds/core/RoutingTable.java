@@ -84,4 +84,23 @@ public class RoutingTable {
     public ArrayList<Neighbour> getNeighbours() {
         return neighbours;
     }
+
+    public boolean isANeighbour(String address, int port) {
+        for (Neighbour n: neighbours) {
+            if (n.equals(address, port)) {
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<String> getOtherNeighbours(String address, int port) {
+        ArrayList<String> list = new ArrayList<>();
+        for (Neighbour n: neighbours) {
+            if(!n.equals(address, port)) {
+                list.add(n.toString());
+            }
+        }
+        return list;
+    }
 }

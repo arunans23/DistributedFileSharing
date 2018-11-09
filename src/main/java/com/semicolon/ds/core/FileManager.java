@@ -83,7 +83,7 @@ public class FileManager {
     private void printFileNames(){
         System.out.println("Total files: " + files.size());
         System.out.println("++++++++++++++++++++++++++");
-        for (String s :files.keySet()) {
+        for (String s: files.keySet()) {
             System.out.println(s);
         }
     }

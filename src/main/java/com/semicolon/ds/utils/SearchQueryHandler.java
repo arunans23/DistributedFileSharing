@@ -8,6 +8,8 @@ import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
@@ -90,35 +92,60 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
         String fileName = stringToken.nextToken();
         int hops = Integer.parseInt(stringToken.nextToken());
 
-        if(fileManager.searchForFile(fileName)){
-            //TODO: implement sending file details
+        //search for the file in the current node
+        Set<String> resultSet = fileManager.searchForFile(fileName);
+        int fileNamesCount = resultSet.size();
 
-        } else {
-            ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
+        if (fileNamesCount != 0) {
 
-            for(Neighbour neighbour: neighbours){
+            StringBuilder fileNamesString = new StringBuilder("");
 
-                //skip sending search query to the same node again
-                if (neighbour.getAddress().equals(message.getAddress())
-                        && neighbour.getPort() == message.getPort()) {
-                    continue;
-                }
+            Iterator<String> itr = resultSet.iterator();
 
-                String payload = String.format(Constants.QUERY_FORMAT,
-                        address,
-                        port,
-                        fileName,
-                        hops - 1);
-
-                String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-
-                ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
-                        neighbour.getPort(),
-                        rawMessage);
-
-                this.sendRequest(queryMessage);
+            while(itr.hasNext()){
+                fileNamesString.append(itr.next() + " ");
             }
-        };
+            String payload = String.format(Constants.QUERY_HIT_FORMAT,
+                    fileNamesCount,
+                    routingTable.getAddress(),
+                    routingTable.getPort(),
+                    hops,
+                    fileNamesString.toString());
+
+            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+
+            ChannelMessage queryHitMessage = new ChannelMessage(address,
+                    port,
+                    rawMessage);
+
+            this.sendRequest(queryHitMessage);
+        }
+
+        //if the hop count is greater than zero send the message to all neighbours again
+        ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
+
+        for(Neighbour neighbour: neighbours){
+
+            //skip sending search query to the same node again
+            if (neighbour.getAddress().equals(message.getAddress())
+                    && neighbour.getPort() == message.getPort()) {
+                continue;
+            }
+
+            String payload = String.format(Constants.QUERY_FORMAT,
+                    address,
+                    port,
+                    fileName,
+                    hops - 1);
+
+            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+
+            ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
+                    neighbour.getPort(),
+                    rawMessage);
+
+            this.sendRequest(queryMessage);
+        }
 
     }
 }

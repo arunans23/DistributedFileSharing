@@ -7,6 +7,7 @@ import com.semicolon.ds.comms.UDPServer;
 import com.semicolon.ds.utils.AbstractResponseHandler;
 import com.semicolon.ds.utils.PingHandler;
 import com.semicolon.ds.utils.ResponseHandlerFactory;
+import com.semicolon.ds.utils.SearchQueryHandler;
 import com.semicolon.ds.utils.TimeoutCallback;
 
 import java.net.DatagramSocket;
@@ -32,6 +33,7 @@ public class MessageBroker extends Thread {
 
     private RoutingTable routingTable;
     private PingHandler pingHandler;
+    private SearchQueryHandler searchQueryHandler;
 
     private TimeoutManager timeoutManager = new TimeoutManager();
 
@@ -48,6 +50,9 @@ public class MessageBroker extends Thread {
         this.pingHandler = PingHandler.getInstance();
 
         this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
+
+        this.searchQueryHandler = SearchQueryHandler.getInstance();
+        this.searchQueryHandler.init(routingTable, channelOut, timeoutManager);
 
         LOG.info("starting server");
         timeoutManager.registerRequest(Constants.R_PING_MESSAGE_ID, Constants.PING_INTERVAL, new TimeoutCallback() {
@@ -99,6 +104,10 @@ public class MessageBroker extends Thread {
 
     public void sendPing(String address, int port) {
         this.pingHandler.sendPing(address, port);
+    }
+
+    public void doSearch(String keyword){
+        this.searchQueryHandler.doSearch(keyword);
     }
 
     public BlockingQueue<ChannelMessage> getChannelIn() {

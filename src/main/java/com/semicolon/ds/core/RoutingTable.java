@@ -80,4 +80,8 @@ public class RoutingTable {
     public int getPort() {
         return port;
     }
+
+    public ArrayList<Neighbour> getNeighbours() {
+        return neighbours;
+    }
 }

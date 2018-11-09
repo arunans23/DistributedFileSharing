@@ -72,6 +72,10 @@ public class GNode {
         }
     }
 
+    public void doSearch(String keyword){
+        this.messageBroker.doSearch(keyword);
+    }
+
     public String getUserName() {
         return userName;
     }

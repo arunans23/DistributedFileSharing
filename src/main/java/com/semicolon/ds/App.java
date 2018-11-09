@@ -19,6 +19,7 @@ public class App
                 String uniqueID = UUID.randomUUID().toString();
                 GNode node = new GNode("node" + uniqueID);
                 node.init();
+                node.doSearch("Baby");
 
             } catch (Exception e) {
                 e.printStackTrace();

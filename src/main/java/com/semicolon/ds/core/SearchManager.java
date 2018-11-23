@@ -2,7 +2,7 @@ package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
 import com.semicolon.ds.utils.ConsoleTable;
-import com.semicolon.ds.utils.QueryHitHandler;
+import com.semicolon.ds.handlers.QueryHitHandler;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package com.semicolon.ds.utils;
+package com.semicolon.ds.handlers;
 
 import com.semicolon.ds.core.MessageBroker;
 

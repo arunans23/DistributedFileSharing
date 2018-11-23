@@ -4,11 +4,11 @@ import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.comms.UDPClient;
 import com.semicolon.ds.comms.UDPServer;
-import com.semicolon.ds.utils.AbstractResponseHandler;
-import com.semicolon.ds.utils.PingHandler;
-import com.semicolon.ds.utils.ResponseHandlerFactory;
-import com.semicolon.ds.utils.SearchQueryHandler;
-import com.semicolon.ds.utils.TimeoutCallback;
+import com.semicolon.ds.handlers.AbstractResponseHandler;
+import com.semicolon.ds.handlers.PingHandler;
+import com.semicolon.ds.handlers.ResponseHandlerFactory;
+import com.semicolon.ds.handlers.SearchQueryHandler;
+import com.semicolon.ds.handlers.TimeoutCallback;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;

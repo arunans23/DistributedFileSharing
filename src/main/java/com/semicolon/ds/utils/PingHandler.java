@@ -102,7 +102,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             }
         }
 
-        this.routingTable.print();
+//        this.routingTable.print();
     }
 
     public void sendPing(String address, int port) {

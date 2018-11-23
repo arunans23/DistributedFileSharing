@@ -80,7 +80,7 @@ public class GNode {
         }
     }
 
-    public boolean doSearch(String keyword){
+    public int doSearch(String keyword){
         return this.searchManager.doSearch(keyword);
     }
 
@@ -116,5 +116,9 @@ public class GNode {
             LOG.severe("Getting free port failed");
             throw new RuntimeException("Getting free port failed");
         }
+    }
+
+    public void printRoutingTable(){
+        this.messageBroker.getRoutingTable().print();
     }
 }

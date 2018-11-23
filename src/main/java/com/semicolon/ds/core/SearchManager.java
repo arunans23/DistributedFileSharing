@@ -15,7 +15,7 @@ class SearchManager {
         this.messageBroker = messageBroker;
     }
 
-    boolean doSearch(String keyword){
+    int doSearch(String keyword){
 
         Map<String, Set<String>> searchResults
                 = new HashMap<String, Set<String>>();
@@ -47,12 +47,12 @@ class SearchManager {
 
         if (fileDownloadOptions.size() == 0){
             System.out.println("Sorry. No files are found!!!");
-            return false;
+            return 0;
         }
 
         printSearchResults(fileDownloadOptions);
         this.clearSearchResults();
-        return true;
+        return fileDownloadOptions.size();
     }
 
     private void clearSearchResults(){
@@ -63,7 +63,7 @@ class SearchManager {
 
     private void printSearchResults(Map<Integer, String> fileDownloadOptions){
 
-        System.out.println("\nFile search results :");
+        System.out.println("\nFile search results : ");
         for (Integer i : fileDownloadOptions.keySet()){
             System.out.println(i.toString() + ") " + fileDownloadOptions.get(i));
         }

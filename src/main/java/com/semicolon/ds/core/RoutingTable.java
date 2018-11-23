@@ -54,16 +54,16 @@ public class RoutingTable {
     }
 
     public synchronized void print() {
-//        System.out.println("Total neighbours: " + neighbours.size());
-//        System.out.println("Address: " + address + ":" + port);
-//        System.out.println("++++++++++++++++++++++++++");
-//        for (Neighbour n :neighbours) {
-//            System.out.println(
-//                    "Address: " + n.getAddress()
-//                    + " Port: " + n.getPort()
-//                    + " Pings: " + n.getPingPongs()
-//            );
-//        }
+        System.out.println("Total neighbours: " + neighbours.size());
+        System.out.println("Address: " + address + ":" + port);
+        System.out.println("++++++++++++++++++++++++++");
+        for (Neighbour n :neighbours) {
+            System.out.println(
+                    "Address: " + n.getAddress()
+                    + " Port: " + n.getPort()
+                    + " Pings: " + n.getPingPongs()
+            );
+        }
     }
 
     public synchronized ArrayList<String> toList() {

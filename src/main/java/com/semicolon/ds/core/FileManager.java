@@ -46,7 +46,7 @@ public class FileManager {
 
         for (String q: querySplit){
             for (String key: this.files.keySet()){
-                if (key.indexOf(q) != -1){
+                if (key.toLowerCase().indexOf(q.toLowerCase()) != -1){
                     result.add(key);
                 }
             }

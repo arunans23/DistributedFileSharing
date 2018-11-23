@@ -136,7 +136,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
                 String payload = String.format(Constants.QUERY_FORMAT,
                         address,
                         port,
-                        fileName,
+                        StringEncoderDecoder.encode(fileName),
                         hops - 1);
 
                 String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);

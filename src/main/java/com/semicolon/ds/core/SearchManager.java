@@ -1,6 +1,7 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
+import com.semicolon.ds.utils.ConsoleTable;
 import com.semicolon.ds.utils.QueryHitHandler;
 
 import java.util.*;
@@ -20,8 +21,6 @@ class SearchManager {
         Map<String, SearchResult> searchResults
                 = new HashMap<String, SearchResult>();
 
-        int fileIndex = 1;
-
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
         queryHitHandler.setSearchResutls(searchResults);
         queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
@@ -37,24 +36,7 @@ class SearchManager {
             e.printStackTrace();
         }
 
-        this.fileDownloadOptions = new HashMap<Integer, String>();
-
-        for (String s : searchResults.keySet()){
-            SearchResult searchResult = searchResults.get(s);
-
-                this.fileDownloadOptions.put(fileIndex, searchResult.getAddress() + ":"
-                        + searchResult.getPort() + " -- " + searchResult.getFileName() + " -- "
-                        + searchResult.getTimeElapsed() + "ms -- "  + searchResult.getHops() + "hops");
-
-                fileIndex++;
-        }
-
-        if (fileDownloadOptions.size() == 0){
-            System.out.println("Sorry. No files are found!!!");
-            return 0;
-        }
-
-        printSearchResults(fileDownloadOptions);
+        printSearchResults(searchResults);
         this.clearSearchResults();
         return fileDownloadOptions.size();
     }
@@ -65,12 +47,50 @@ class SearchManager {
         queryHitHandler.setSearchResutls(null);
     }
 
-    private void printSearchResults(Map<Integer, String> fileDownloadOptions){
+    private void printSearchResults(Map<String, SearchResult> searchResults){
 
         System.out.println("\nFile search results : ");
-        for (Integer i : fileDownloadOptions.keySet()){
-            System.out.println(i.toString() + ") " + fileDownloadOptions.get(i));
+
+        ArrayList<String> headers = new ArrayList<String>();
+        headers.add("Option No");
+        headers.add("FileName");
+        headers.add("Source");
+        headers.add("QueryHit time (ms)");
+        headers.add("Hop count");
+
+        ArrayList<ArrayList<String>> content = new ArrayList<ArrayList<String>>();
+
+        int fileIndex = 1;
+
+        this.fileDownloadOptions = new HashMap<Integer, String>();
+
+        for (String s : searchResults.keySet()){
+            SearchResult searchResult = searchResults.get(s);
+
+            this.fileDownloadOptions.put(fileIndex, searchResult.getAddress() + ":"
+                    + searchResult.getPort() + " -- " + searchResult.getFileName());
+
+            ArrayList<String> row1 = new ArrayList<String>();
+            row1.add("" + fileIndex);
+            row1.add(searchResult.getFileName());
+            row1.add(searchResult.getAddress() + ":" + searchResult.getPort());
+            row1.add("" + searchResult.getTimeElapsed());
+            row1.add("" + searchResult.getHops());
+
+            content.add(row1);
+
+            fileIndex++;
         }
+
+        if (fileDownloadOptions.size() == 0){
+            System.out.println("Sorry. No files are found!!!");
+
+            return;
+        }
+
+        ConsoleTable ct = new ConsoleTable(headers,content);
+        ct.printTable();
+
     }
 
     public String getFileDetails(int fileIndex){

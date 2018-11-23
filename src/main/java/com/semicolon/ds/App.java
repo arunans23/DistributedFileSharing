@@ -3,8 +3,7 @@ package com.semicolon.ds;
 import com.semicolon.ds.core.GNode;
 
 import java.io.Console;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Main App
@@ -21,10 +20,22 @@ public class App
             Scanner scanner = new Scanner(System.in);
 
             while(true){
-                System.out.println("Enter your search query : ");
+                System.out.println("\nEnter your search query below : ");
                 String searchQuery = scanner.nextLine();
-                node.doSearch(searchQuery);
-                Thread.sleep(5000);
+
+                if (searchQuery != null && !searchQuery.equals("")){
+                    boolean results = node.doSearch(searchQuery);
+
+                    if (results){
+                        System.out.println("\nPlease choose the file you need to download : ");
+                        String fileOption = scanner.nextLine();
+
+                        node.getFile(Integer.parseInt(fileOption));
+                    }
+
+                } else {
+                    System.out.println("Please give a valid search query!!!");
+                }
             }
 
         } catch (Exception e) {
@@ -32,4 +43,6 @@ public class App
         }
 
     }
+
+
 }

@@ -96,7 +96,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
 
     @Override
     public void handleResponse(ChannelMessage message) {
-        LOG.info("Received SER : " + message.getMessage()
+        LOG.fine("Received SER : " + message.getMessage()
                 + " from: " + message.getAddress()
                 + " port: " + message.getPort());
 
@@ -141,30 +141,34 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
         }
 
         //if the hop count is greater than zero send the message to all neighbours again
-        ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
 
-        for(Neighbour neighbour: neighbours){
+        if (hops > 0){
+            ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
 
-            //skip sending search query to the same node again
-            if (neighbour.getAddress().equals(message.getAddress())
-                    && neighbour.getPort() == message.getPort()) {
-                continue;
+            for(Neighbour neighbour: neighbours){
+
+                //skip sending search query to the same node again
+                if (neighbour.getAddress().equals(message.getAddress())
+                        && neighbour.getPort() == message.getPort()) {
+                    continue;
+                }
+
+                String payload = String.format(Constants.QUERY_FORMAT,
+                        address,
+                        port,
+                        fileName,
+                        hops - 1);
+
+                String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+
+                ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
+                        neighbour.getPort(),
+                        rawMessage);
+
+                this.sendRequest(queryMessage);
             }
-
-            String payload = String.format(Constants.QUERY_FORMAT,
-                    address,
-                    port,
-                    fileName,
-                    hops - 1);
-
-            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-
-            ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
-                    neighbour.getPort(),
-                    rawMessage);
-
-            this.sendRequest(queryMessage);
         }
+
 
     }
 }

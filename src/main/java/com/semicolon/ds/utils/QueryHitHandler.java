@@ -1,11 +1,11 @@
 package com.semicolon.ds.utils;
 
+import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
-import javax.management.Query;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
@@ -21,6 +21,8 @@ public class QueryHitHandler implements AbstractResponseHandler {
 
     private static QueryHitHandler queryHitHandler;
 
+    private Map<String, Set<String>> searchResutls;
+
     private QueryHitHandler(){
 
     }
@@ -35,7 +37,7 @@ public class QueryHitHandler implements AbstractResponseHandler {
 
     @Override
     public synchronized void handleResponse(ChannelMessage message) {
-        LOG.info("Received SEROK : " + message.getMessage()
+        LOG.fine("Received SEROK : " + message.getMessage()
                 + " from: " + message.getAddress()
                 + " port: " + message.getPort());
 
@@ -47,11 +49,27 @@ public class QueryHitHandler implements AbstractResponseHandler {
         String address = stringToken.nextToken().trim();
         int port = Integer.parseInt(stringToken.nextToken().trim());
 
+        String addressKey = String.format(Constants.ADDRESS_KEY_FORMAT, address, port);
+
         int hops = Integer.parseInt(stringToken.nextToken());
 
-        while(stringToken.hasMoreTokens()){
-            System.out.println(address + ":" + port + "\t"
-                    + StringEncoderDecoder.decode(stringToken.nextToken()));
+        while(filesCount > 0){
+//            System.out.println(address + ":" + port + "\t"
+//                    + StringEncoderDecoder.decode(stringToken.nextToken()));
+            if (this.searchResutls != null){
+                if(this.searchResutls.keySet().contains(addressKey)){
+
+                    this.searchResutls.get(addressKey)
+                            .add(StringEncoderDecoder.decode(stringToken.nextToken()));
+
+                } else {
+                    Set<String> files = new HashSet<String>();
+                    files.add(StringEncoderDecoder.decode(stringToken.nextToken()));
+                    this.searchResutls.put(addressKey, files);
+                }
+            }
+
+            filesCount--;
         }
     }
 
@@ -60,5 +78,9 @@ public class QueryHitHandler implements AbstractResponseHandler {
         this.routingTable = routingTable;
         this.channelOut = channelOut;
         this.timeoutManager = timeoutManager;
+    }
+
+    public void setSearchResutls(Map<String, Set<String>> searchResutls) {
+        this.searchResutls = searchResutls;
     }
 }

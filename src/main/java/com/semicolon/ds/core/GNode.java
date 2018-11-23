@@ -1,10 +1,14 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.comms.BSClient;
+import com.semicolon.ds.utils.QueryHitHandler;
+import com.semicolon.ds.utils.ResponseHandlerFactory;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class GNode {
@@ -17,6 +21,7 @@ public class GNode {
     private String ipAddress;
     private int port;
     private MessageBroker messageBroker;
+    private SearchManager searchManager;
 
     public GNode (String userName) throws IOException {
 
@@ -33,9 +38,12 @@ public class GNode {
 
         this.bsClient = new BSClient();
         this.messageBroker = new MessageBroker(ipAddress, port);
+
+        this.searchManager = new SearchManager(this.messageBroker);
+
         messageBroker.start();
 
-        LOG.info("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
+        LOG.fine("Gnode initiated on IP :" + ipAddress + " and Port :" + port);
 
     }
 
@@ -72,9 +80,15 @@ public class GNode {
         }
     }
 
-    public void doSearch(String keyword){
-        this.messageBroker.doSearch(keyword);
+    public boolean doSearch(String keyword){
+        return this.searchManager.doSearch(keyword);
     }
+
+    public void getFile(int fileOption){
+        String fileDetail = this.searchManager.getFileDetails(fileOption);
+        System.out.println("The file you requested is " + fileDetail);
+    }
+
 
     public String getUserName() {
         return userName;

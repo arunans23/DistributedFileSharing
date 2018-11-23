@@ -174,7 +174,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         public void onTimeout(String messageId) {
             pingFailureCount.put(messageId,pingFailureCount.get(messageId) + 1);
             if(pingFailureCount.get(messageId) >= Constants.PING_RETRY) {
-                LOG.info("neighbour lost :( =>" + messageId);
+                LOG.fine("neighbour lost :( =>" + messageId);
                 routingTable.removeNeighbour(
                         messageId.split(":")[1],
                         Integer.valueOf(messageId.split(":")[2]));

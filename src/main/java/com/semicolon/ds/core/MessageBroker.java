@@ -14,6 +14,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +55,7 @@ public class MessageBroker extends Thread {
         this.searchQueryHandler = SearchQueryHandler.getInstance();
         this.searchQueryHandler.init(routingTable, channelOut, timeoutManager);
 
-        LOG.info("starting server");
+        LOG.fine("starting server");
         timeoutManager.registerRequest(Constants.R_PING_MESSAGE_ID, Constants.PING_INTERVAL, new TimeoutCallback() {
             @Override
             public void onTimeout(String messageId) {
@@ -80,7 +81,7 @@ public class MessageBroker extends Thread {
             try {
                 ChannelMessage message = channelIn.poll(100, TimeUnit.MILLISECONDS);
                 if (message != null) {
-                    LOG.info("Received Message: " + message.getMessage()
+                    LOG.fine("Received Message: " + message.getMessage()
                             + " from: " + message.getAddress()
                             + " port: " + message.getPort());
 

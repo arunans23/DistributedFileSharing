@@ -65,12 +65,12 @@ public class BSClient {
 
         switch (nodesCount) {
             case 0:
-                LOG.info("Successful - No other nodes in the network");
+                LOG.fine("Successful - No other nodes in the network");
                 gNodes = new ArrayList<>();
                 break;
 
             case 1:
-                LOG.info("No of nodes found : 1");
+                LOG.fine("No of nodes found : 1");
 
                 gNodes = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class BSClient {
                 break;
 
             case 2:
-                LOG.info("No of nodes found : 2");
+                LOG.fine("No of nodes found : 2");
 
                 gNodes = new ArrayList<>();
 
@@ -125,7 +125,7 @@ public class BSClient {
 
         switch (code) {
             case 0:
-                LOG.info("Successfully unregistered");
+                LOG.fine("Successfully unregistered");
                 return true;
 
             case 9999:
@@ -143,10 +143,10 @@ public class BSClient {
                     Constants.BS_PROPERTIES));
 
         } catch (IOException e) {
-            LOG.info("Could not open " + Constants.BS_PROPERTIES);
+            LOG.severe("Could not open " + Constants.BS_PROPERTIES);
             throw new RuntimeException("Could not open " + Constants.BS_PROPERTIES);
         } catch (NullPointerException e) {
-            LOG.info("Could not find " + Constants.BS_PROPERTIES);
+            LOG.severe("Could not find " + Constants.BS_PROPERTIES);
             throw new RuntimeException("Could not find " + Constants.BS_PROPERTIES);
         }
 

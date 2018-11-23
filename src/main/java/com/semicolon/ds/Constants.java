@@ -25,6 +25,8 @@ public class Constants {
 
     public static final String ENCODE_CLASS = "UTF-8";
 
+    public static final String ADDRESS_KEY_FORMAT = "%s:%s";
+
     public static final int TIMEOUT_REG = 10000;
 
     public static final int MIN_NEIGHBOURS = 2;
@@ -33,6 +35,8 @@ public class Constants {
     public static final int PING_TIMEOUT = 3000;
     public static final int PING_INTERVAL = 20000;
     public static final int PING_RETRY = 3;
+
+    public static final int SEARCH_TIMEOUT = 5000;
 
     public static final String R_PING_MESSAGE_ID = "rPingMessage";
 

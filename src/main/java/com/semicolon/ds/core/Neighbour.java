@@ -4,11 +4,13 @@ public class Neighbour {
     private final String address;
     private final int port;
     private int pingPongs;
+    private int clientPort;
 
-    public Neighbour(String address, int port) {
+    public Neighbour(String address, int port, int clientPort) {
         this.address = address;
         this.port = port;
         this.pingPongs = 0;
+        this.clientPort = clientPort;
     }
 
     public boolean equals (Neighbour newN) {
@@ -37,5 +39,9 @@ public class Neighbour {
 
     public String toString() {
         return this.address + ":" + this.port;
+    }
+
+    public int getClientPort() {
+        return clientPort;
     }
 }

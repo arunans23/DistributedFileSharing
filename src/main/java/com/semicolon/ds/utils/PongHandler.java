@@ -2,7 +2,6 @@ package com.semicolon.ds.utils;
 
 import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
-import com.semicolon.ds.core.MessageBroker;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
@@ -52,12 +51,12 @@ public class PongHandler implements AbstractRequestHandler, AbstractResponseHand
         int port = Integer.parseInt(stringToken.nextToken().trim());
         if(keyword.equals("BPONG")) {
             if(routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
-                this.routingTable.addNeighbour(address, port);
+                this.routingTable.addNeighbour(address, port, message.getPort());
 //                this.routingTable.print();
             }
         } else {
             this.timeoutManager.registerResponse(String.format(Constants.PING_MESSAGE_ID_FORMAT,address,port));
-            this.routingTable.addNeighbour(address, port);
+            this.routingTable.addNeighbour(address, port, message.getPort());
 
 //            this.routingTable.print();
         }

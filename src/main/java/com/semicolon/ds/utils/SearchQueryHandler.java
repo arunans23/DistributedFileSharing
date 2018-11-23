@@ -43,23 +43,6 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
     }
 
     public void doSearch(String keyword) {
-//        ArrayList<Neighbour> neighbours = this.routingTable.getNeighbours();
-//
-//        for(Neighbour neighbour: neighbours){
-//            String payload = String.format(Constants.QUERY_FORMAT,
-//                    this.routingTable.getAddress(),
-//                    this.routingTable.getPort(),
-//                    keyword,
-//                    Constants.HOP_COUNT);
-//
-//            String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-//
-//            ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
-//                    neighbour.getPort(),
-//                    rawMessage);
-//
-//            this.sendRequest(queryMessage);
-//        }
 
         String payload = String.format(Constants.QUERY_FORMAT,
                 this.routingTable.getAddress(),
@@ -149,7 +132,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
 
                 //skip sending search query to the same node again
                 if (neighbour.getAddress().equals(message.getAddress())
-                        && neighbour.getPort() == message.getPort()) {
+                        && neighbour.getClientPort() == message.getPort()) {
                     continue;
                 }
 

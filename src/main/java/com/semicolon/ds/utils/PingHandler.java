@@ -48,10 +48,9 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
     @Override
     public void handleResponse(ChannelMessage message) {
 
-
-//        LOG.info("Received PING : " + message.getMessage()
-//                + " from: " + message.getAddress()
-//                + " port: " + message.getPort());
+        LOG.fine("Received PING : " + message.getMessage()
+                + " from: " + message.getAddress()
+                + " port: " + message.getPort());
 
         StringTokenizer stringToken = new StringTokenizer(message.getMessage(), " ");
 
@@ -89,7 +88,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             }
 
         } else {
-            int result = this.routingTable.addNeighbour(address, port);
+            int result = this.routingTable.addNeighbour(address, port, message.getPort());
 
             if (result != 0){
                 String payload = String.format(Constants.PONG_FORMAT,

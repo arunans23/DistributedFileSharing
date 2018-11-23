@@ -68,7 +68,8 @@ public class App
                     node.printRoutingTable();
 
                 } else if (commandOption.equals("3")){
-                    System.out.println("Sorry... not yet implemented");
+                    node.unRegister();
+                    System.exit(0);
 
                 } else {
                     System.out.println("Please enter a valid option...");

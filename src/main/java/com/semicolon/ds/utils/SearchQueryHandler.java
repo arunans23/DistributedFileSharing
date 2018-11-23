@@ -7,9 +7,6 @@ import com.semicolon.ds.core.Neighbour;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -111,7 +108,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
                     fileNamesCount,
                     routingTable.getAddress(),
                     routingTable.getPort(),
-                    hops,
+                    Constants.HOP_COUNT- hops,
                     fileNamesString.toString());
 
             String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);

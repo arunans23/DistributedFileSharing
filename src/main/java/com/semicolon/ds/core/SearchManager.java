@@ -17,15 +17,16 @@ class SearchManager {
 
     int doSearch(String keyword){
 
-        Map<String, Set<String>> searchResults
-                = new HashMap<String, Set<String>>();
+        Map<String, SearchResult> searchResults
+                = new HashMap<String, SearchResult>();
 
         int fileIndex = 1;
 
-        this.messageBroker.doSearch(keyword);
-
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
         queryHitHandler.setSearchResutls(searchResults);
+        queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
+
+        this.messageBroker.doSearch(keyword);
 
         System.out.println("Please be patient till the file results are returned ...");
 
@@ -39,10 +40,13 @@ class SearchManager {
         this.fileDownloadOptions = new HashMap<Integer, String>();
 
         for (String s : searchResults.keySet()){
-            for (String st : searchResults.get(s)){
-                this.fileDownloadOptions.put(fileIndex, s + " -- " + st);
+            SearchResult searchResult = searchResults.get(s);
+
+                this.fileDownloadOptions.put(fileIndex, searchResult.getAddress() + ":"
+                        + searchResult.getPort() + " -- " + searchResult.getFileName() + " -- "
+                        + searchResult.getTimeElapsed() + "ms -- "  + searchResult.getHops() + "hops");
+
                 fileIndex++;
-            }
         }
 
         if (fileDownloadOptions.size() == 0){

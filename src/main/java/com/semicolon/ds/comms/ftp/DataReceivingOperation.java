@@ -47,7 +47,8 @@ public class DataReceivingOperation implements Runnable {
             output.close();
             serverData.close();
 
-            System.out.println("File " + fileName + " received from server.");
+            System.out.println("File " + fileName + " successfully downloaded.");
+
         } catch (IOException ex) {
             System.err.println("server error. Connection closed.");
         }

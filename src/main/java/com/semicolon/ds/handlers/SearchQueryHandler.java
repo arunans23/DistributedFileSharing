@@ -149,7 +149,5 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
                 this.sendRequest(queryMessage);
             }
         }
-
-
     }
 }

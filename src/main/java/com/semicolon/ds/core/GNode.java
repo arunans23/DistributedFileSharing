@@ -1,6 +1,9 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.comms.BSClient;
+import com.semicolon.ds.comms.ftp.DataSendingOperation;
+import com.semicolon.ds.comms.ftp.FTPClient;
+import com.semicolon.ds.comms.ftp.FTPServer;
 
 import java.io.IOException;
 import java.net.*;
@@ -18,8 +21,9 @@ public class GNode {
     private int port;
     private MessageBroker messageBroker;
     private SearchManager searchManager;
+    private FTPServer ftpServer;
 
-    public GNode (String userName) throws IOException {
+    public GNode (String userName) throws Exception {
 
         try (final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
@@ -28,7 +32,9 @@ public class GNode {
         } catch (Exception e){
             throw new RuntimeException("Could not find host address");
         }
-
+        this.ftpServer = new FTPServer(getFreePort());
+        Thread t = new Thread(ftpServer);
+        t.start();
         this.userName = userName;
         this.port = getFreePort();
 
@@ -80,9 +86,11 @@ public class GNode {
         return this.searchManager.doSearch(keyword);
     }
 
-    public void getFile(int fileOption){
-        String fileDetail = this.searchManager.getFileDetails(fileOption);
+    public void getFile(int fileOption) throws Exception {
+
+        String[] fileDetail = this.searchManager.getFileDetails(fileOption).split(":");
         System.out.println("The file you requested is " + fileDetail);
+        FTPClient ftpClient = new FTPClient(fileDetail[0], Integer.parseInt(fileDetail[1]), fileDetail[2]);
     }
 
 

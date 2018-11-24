@@ -1,5 +1,6 @@
 package com.semicolon.ds.core;
 
+import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.BSClient;
 import com.semicolon.ds.comms.ftp.DataSendingOperation;
 import com.semicolon.ds.comms.ftp.FTPClient;
@@ -8,6 +9,7 @@ import com.semicolon.ds.comms.ftp.FTPServer;
 import java.io.IOException;
 import java.net.*;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class GNode {
@@ -32,7 +34,7 @@ public class GNode {
         } catch (Exception e){
             throw new RuntimeException("Could not find host address");
         }
-        this.ftpServer = new FTPServer(15555);
+        this.ftpServer = new FTPServer(Constants.FTP_PORT);
         Thread t = new Thread(ftpServer);
         t.start();
         this.userName = userName;
@@ -88,9 +90,10 @@ public class GNode {
 
     public void getFile(int fileOption) throws Exception {
 
-        String[] fileDetail = this.searchManager.getFileDetails(fileOption).split(":");
-        System.out.println("The file you requested is " + fileDetail);
-        FTPClient ftpClient = new FTPClient(fileDetail[0], Integer.parseInt(fileDetail[1]), fileDetail[2]);
+        SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
+        System.out.println("The file you requested is " + fileDetail.getFileName());
+        FTPClient ftpClient = new FTPClient(fileDetail.getAddress(),
+                Constants.FTP_PORT, fileDetail.getFileName());
     }
 
 

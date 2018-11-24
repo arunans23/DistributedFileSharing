@@ -10,7 +10,7 @@ class SearchManager {
 
     private MessageBroker messageBroker;
 
-    private Map<Integer, String> fileDownloadOptions;
+    private Map<Integer, SearchResult> fileDownloadOptions;
 
     SearchManager(MessageBroker messageBroker){
         this.messageBroker = messageBroker;
@@ -62,13 +62,12 @@ class SearchManager {
 
         int fileIndex = 1;
 
-        this.fileDownloadOptions = new HashMap<Integer, String>();
+        this.fileDownloadOptions = new HashMap<Integer, SearchResult>();
 
         for (String s : searchResults.keySet()){
             SearchResult searchResult = searchResults.get(s);
 
-            this.fileDownloadOptions.put(fileIndex, searchResult.getAddress() + ":"
-                    + searchResult.getPort() + " -- " + searchResult.getFileName());
+            this.fileDownloadOptions.put(fileIndex, searchResult);
 
             ArrayList<String> row1 = new ArrayList<String>();
             row1.add("" + fileIndex);
@@ -93,7 +92,7 @@ class SearchManager {
 
     }
 
-    public String getFileDetails(int fileIndex){
+    public SearchResult getFileDetails(int fileIndex){
         return this.fileDownloadOptions.get(fileIndex);
     }
 }

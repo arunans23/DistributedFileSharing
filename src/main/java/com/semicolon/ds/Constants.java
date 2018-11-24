@@ -5,6 +5,8 @@ public class Constants {
     public static final String BS_PROPERTIES = "Bootstrap.properties";
 //    public static final String LOCALHOST = "127.0.0.1";
 
+    public static final int FTP_PORT = 15555;
+
     public static final String MSG_FORMAT = "%04d %s";
 
     public static final String REG_FORMAT = "REG %s %s %s";

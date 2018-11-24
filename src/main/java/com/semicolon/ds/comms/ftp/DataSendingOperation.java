@@ -58,7 +58,7 @@ public class DataSendingOperation implements Runnable {
 
     public File createFiles(String fileName) throws IOException {
         String fileSeparator = System.getProperty("file.separator");
-        String absoluteFilePath = fileSeparator + "home/smtt/Desktop" + fileSeparator + fileName;
+        String absoluteFilePath = "E:\\" + fileName;
         File file = new File(absoluteFilePath);
         System.out.print(absoluteFilePath);
         if(file.createNewFile()){

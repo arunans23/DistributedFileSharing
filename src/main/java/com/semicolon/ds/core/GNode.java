@@ -32,7 +32,7 @@ public class GNode {
         } catch (Exception e){
             throw new RuntimeException("Could not find host address");
         }
-        this.ftpServer = new FTPServer(getFreePort());
+        this.ftpServer = new FTPServer(15555);
         Thread t = new Thread(ftpServer);
         t.start();
         this.userName = userName;

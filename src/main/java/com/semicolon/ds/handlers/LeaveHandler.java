@@ -7,7 +7,6 @@ import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
 
 public class LeaveHandler implements AbstractRequestHandler {

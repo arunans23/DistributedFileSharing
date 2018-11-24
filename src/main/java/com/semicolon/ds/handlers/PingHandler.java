@@ -58,55 +58,59 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         String keyword = stringToken.nextToken();
         String address = stringToken.nextToken().trim();
         int port = Integer.parseInt(stringToken.nextToken().trim());
-        if(keyword.equals("BPING")) {
-            int hops = Integer.parseInt(stringToken.nextToken().trim());
+        switch (keyword) {
+            case "BPING":
+                int hops = Integer.parseInt(stringToken.nextToken().trim());
 
-            //if a neighbour sends a bping, pass it to the other neighbours
-            if(routingTable.isANeighbour(address, port)) {
-                if(hops > 0) {
-                    forwardBPing(address, port, hops-1);
+                //if a neighbour sends a bping, pass it to the other neighbours
+                if (routingTable.isANeighbour(address, port)) {
+                    if (hops > 0) {
+                        forwardBPing(address, port, hops - 1);
+                    }
+                } else {
+
+                    //check if we can add another neighbour
+                    int result = this.routingTable.getCount();
+                    if (result < Constants.MAX_NEIGHBOURS) {
+                        //if can add, then send a bpong
+                        String payload = String.format(Constants.BPONG_FORMAT,
+                                this.routingTable.getAddress(), this.routingTable.getPort());
+
+                        String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
+                        ChannelMessage outGoingMsg = new ChannelMessage(address,
+                                port, rawMessage);
+                        this.sendRequest(outGoingMsg);
+                    } else {
+                        //otherwise send it to the neighbours
+                        if (hops > 0) {
+                            forwardBPing(address, port, hops - 1);
+                        }
+                    }
                 }
-            } else {
 
-                //check if we can add another neighbour
-                int result = this.routingTable.getCount();
-                if (result < Constants.MAX_NEIGHBOURS) {
-                    //if can add, then send a bpong
-                    String payload = String.format(Constants.BPONG_FORMAT,
+                break;
+            case "LEAVE":
+                System.out.println("receiving leave");
+                this.routingTable.removeNeighbour(address, port);
+                if (routingTable.getCount() <= Constants.MIN_NEIGHBOURS) {
+                    sendBPing(address, port);
+                }
+                this.routingTable.print();
+
+                break;
+            default:
+                int result = this.routingTable.addNeighbour(address, port, message.getPort());
+
+                if (result != 0) {
+                    String payload = String.format(Constants.PONG_FORMAT,
                             this.routingTable.getAddress(), this.routingTable.getPort());
 
                     String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
                     ChannelMessage outGoingMsg = new ChannelMessage(address,
                             port, rawMessage);
                     this.sendRequest(outGoingMsg);
-                } else {
-                    //otherwise send it to the neighbours
-                    if(hops > 0) {
-                        forwardBPing(address, port, hops-1);
-                    }
                 }
-            }
-
-        } else if (keyword.equals("LEAVE")){
-            System.out.println("receiving leave");
-            this.routingTable.removeNeighbour(address, port);
-            if(routingTable.getCount() <= Constants.MIN_NEIGHBOURS) {
-                sendBPing(address, port);
-            }
-            this.routingTable.print();
-
-        }else {
-            int result = this.routingTable.addNeighbour(address, port, message.getPort());
-
-            if (result != 0){
-                String payload = String.format(Constants.PONG_FORMAT,
-                        this.routingTable.getAddress(), this.routingTable.getPort());
-
-                String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-                ChannelMessage outGoingMsg = new ChannelMessage(address,
-                        port, rawMessage);
-                this.sendRequest(outGoingMsg);
-            }
+                break;
         }
 
 //        this.routingTable.print();

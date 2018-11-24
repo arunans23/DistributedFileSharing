@@ -37,7 +37,7 @@ public class MessageBroker extends Thread {
 
     private TimeoutManager timeoutManager = new TimeoutManager();
 
-    public MessageBroker(String address, int port, int tcpPort) throws SocketException {
+    public MessageBroker(String address, int port) throws SocketException {
         channelIn = new LinkedBlockingQueue<ChannelMessage>();
         DatagramSocket socket = new DatagramSocket(port);
         this.server = new UDPServer(channelIn, socket);
@@ -45,7 +45,7 @@ public class MessageBroker extends Thread {
         channelOut = new LinkedBlockingQueue<ChannelMessage>();
         this.client = new UDPClient(channelOut, new DatagramSocket());
 
-        this.routingTable = new RoutingTable(address, port, tcpPort);
+        this.routingTable = new RoutingTable(address, port);
 
         this.pingHandler = PingHandler.getInstance();
 

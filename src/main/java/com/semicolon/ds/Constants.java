@@ -5,7 +5,7 @@ public class Constants {
     public static final String BS_PROPERTIES = "Bootstrap.properties";
 //    public static final String LOCALHOST = "127.0.0.1";
 
-    public static final int FTP_PORT = 15555;
+    public static final int FTP_PORT_OFFSET = 100;
 
     public static final String MSG_FORMAT = "%04d %s";
 
@@ -39,6 +39,7 @@ public class Constants {
     public static final int PING_RETRY = 3;
 
     public static final int SEARCH_TIMEOUT = 3000;
+    public static final int FILE_DOWNLOAD_TIMEOUT = 2000;
 
     public static final String R_PING_MESSAGE_ID = "rPingMessage";
 

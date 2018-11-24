@@ -11,9 +11,12 @@ public class FTPServer implements Runnable{
     private ServerSocket serverSocket;
     private Socket clientsocket;
 
-    public FTPServer(int port) throws Exception {
+    private String userName;
+
+    public FTPServer(int port, String userName) throws Exception {
         // create socket
         serverSocket = new ServerSocket(port);
+        this.userName = userName;
     }
 
     public int getPort(){
@@ -23,14 +26,13 @@ public class FTPServer implements Runnable{
     @Override
     public void run() {
         while (true) {
-            System.out.println("Waiting...");
 
             try {
                 clientsocket = serverSocket.accept();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Thread t = new Thread(new DataSendingOperation(clientsocket));
+            Thread t = new Thread(new DataSendingOperation(clientsocket, userName));
             t.start();
         }
     }

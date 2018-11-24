@@ -34,14 +34,16 @@ public class GNode {
         } catch (Exception e){
             throw new RuntimeException("Could not find host address");
         }
-        this.ftpServer = new FTPServer(getFreePort());
-        Thread t = new Thread(ftpServer);
-        t.start();
+
         this.userName = userName;
         this.port = getFreePort();
 
+        this.ftpServer = new FTPServer(this.port + Constants.FTP_PORT_OFFSET, userName);
+        Thread t = new Thread(ftpServer);
+        t.start();
+
         this.bsClient = new BSClient();
-        this.messageBroker = new MessageBroker(ipAddress, port, ftpServer.getPort());
+        this.messageBroker = new MessageBroker(ipAddress, port);
 
         this.searchManager = new SearchManager(this.messageBroker);
 
@@ -90,14 +92,16 @@ public class GNode {
     public void getFile(int fileOption) {
         try {
             SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
-            System.out.println("The file you requested is " + fileDetail);
-            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), Constants.FTP_PORT,
+            System.out.println("The file you requested is " + fileDetail.getFileName());
+            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), fileDetail.getTcpPort(),
                     fileDetail.getFileName());
+
+            System.out.println("Waiting for file download...");
+            Thread.sleep(Constants.FILE_DOWNLOAD_TIMEOUT);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     public String getUserName() {
         return userName;

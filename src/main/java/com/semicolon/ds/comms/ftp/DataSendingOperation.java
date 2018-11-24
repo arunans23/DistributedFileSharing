@@ -2,14 +2,20 @@ package com.semicolon.ds.comms.ftp;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class DataSendingOperation implements Runnable {
 
     private Socket clientSocket;
     private BufferedReader in = null;
 
-    public DataSendingOperation(Socket client) {
+    private final Logger LOG = Logger.getLogger(DataSendingOperation.class.getName());
+
+    private String userName;
+
+    public DataSendingOperation(Socket client, String userName) {
         this.clientSocket = client;
+        this.userName = userName;
     }
 
     @Override
@@ -49,21 +55,22 @@ public class DataSendingOperation implements Runnable {
             dos.writeLong(mybytearray.length);
             dos.write(mybytearray, 0, mybytearray.length);
             dos.flush();
-            System.out.println("File " + file.getName() + " sent to client.");
+            fis.close();
+            LOG.fine("File " + file.getName() + " sent to client.");
         } catch (Exception e) {
-            System.err.println("File does not exist!");
+            LOG.severe("File does not exist!");
             e.printStackTrace();
         }
     }
 
     public File createFiles(String fileName) throws IOException {
         String fileSeparator = System.getProperty("file.separator");
-        String absoluteFilePath = "E:\\" + fileName;
+        String absoluteFilePath = "." + fileSeparator + this.userName + fileSeparator + fileName;
         File file = new File(absoluteFilePath);
-        System.out.print(absoluteFilePath);
+        file.getParentFile().mkdir();
         if(file.createNewFile()){
-            System.out.println(absoluteFilePath+" File Created");
-        }else System.out.println("File "+absoluteFilePath+" already exists");
+            LOG.fine(absoluteFilePath+" File Created");
+        }else LOG.fine("File "+absoluteFilePath+" already exists");
         return file;
     }
 }

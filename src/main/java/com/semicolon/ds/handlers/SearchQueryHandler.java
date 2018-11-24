@@ -44,7 +44,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
 
         String payload = String.format(Constants.QUERY_FORMAT,
                 this.routingTable.getAddress(),
-                this.routingTable.getTcpPort(),
+                this.routingTable.getPort(),
                 StringEncoderDecoder.encode(keyword),
                 Constants.HOP_COUNT);
 

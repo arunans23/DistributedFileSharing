@@ -4,11 +4,7 @@ import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.comms.UDPClient;
 import com.semicolon.ds.comms.UDPServer;
-import com.semicolon.ds.handlers.AbstractResponseHandler;
-import com.semicolon.ds.handlers.PingHandler;
-import com.semicolon.ds.handlers.ResponseHandlerFactory;
-import com.semicolon.ds.handlers.SearchQueryHandler;
-import com.semicolon.ds.handlers.TimeoutCallback;
+import com.semicolon.ds.handlers.*;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -33,6 +29,7 @@ public class MessageBroker extends Thread {
 
     private RoutingTable routingTable;
     private PingHandler pingHandler;
+    private LeaveHandler leaveHandler;
     private SearchQueryHandler searchQueryHandler;
 
     private TimeoutManager timeoutManager = new TimeoutManager();
@@ -48,8 +45,10 @@ public class MessageBroker extends Thread {
         this.routingTable = new RoutingTable(address, port);
 
         this.pingHandler = PingHandler.getInstance();
+        this.leaveHandler = LeaveHandler.getInstance();
 
         this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
+        this.leaveHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
 
         this.searchQueryHandler = SearchQueryHandler.getInstance();
         this.searchQueryHandler.init(routingTable, channelOut, timeoutManager);
@@ -142,4 +141,7 @@ public class MessageBroker extends Thread {
         }
     }
 
+    public void sendLeave() {
+        this.leaveHandler.sendLeave();
+    }
 }

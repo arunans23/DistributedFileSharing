@@ -61,6 +61,14 @@ public class ResponseHandlerFactory {
                         messageBroker.getTimeoutManager());
                 return queryHitHandler;
 
+            case "LEAVE":
+                AbstractResponseHandler leaveHandler = PingHandler.getInstance();
+                leaveHandler.init(
+                        messageBroker.getRoutingTable(),
+                        messageBroker.getChannelOut(),
+                        messageBroker.getTimeoutManager()
+                );
+                return leaveHandler;
             default:
                 LOG.severe("Unknown keyword received in Response Handler : " + keyword);
                 return null;

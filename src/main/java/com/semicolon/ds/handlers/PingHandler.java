@@ -87,7 +87,15 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                 }
             }
 
-        } else {
+        } else if (keyword.equals("LEAVE")){
+            System.out.println("receiving leave");
+            this.routingTable.removeNeighbour(address, port);
+            if(routingTable.getCount() <= Constants.MIN_NEIGHBOURS) {
+                sendBPing(address, port);
+            }
+            this.routingTable.print();
+
+        }else {
             int result = this.routingTable.addNeighbour(address, port, message.getPort());
 
             if (result != 0){

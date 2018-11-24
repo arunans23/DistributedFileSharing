@@ -68,7 +68,7 @@ class SearchManager {
             SearchResult searchResult = searchResults.get(s);
 
             this.fileDownloadOptions.put(fileIndex, searchResult.getAddress() + ":"
-                    + searchResult.getPort() + " -- " + searchResult.getFileName());
+                    + searchResult.getPort() + ":" + searchResult.getFileName());
 
             ArrayList<String> row1 = new ArrayList<String>();
             row1.add("" + fileIndex);

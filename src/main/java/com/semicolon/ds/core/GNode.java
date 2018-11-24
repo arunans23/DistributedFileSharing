@@ -86,11 +86,14 @@ public class GNode {
         return this.searchManager.doSearch(keyword);
     }
 
-    public void getFile(int fileOption) throws Exception {
-
-        String[] fileDetail = this.searchManager.getFileDetails(fileOption).split(":");
-        System.out.println("The file you requested is " + fileDetail);
-        FTPClient ftpClient = new FTPClient(fileDetail[0], Integer.parseInt(fileDetail[1]), fileDetail[2]);
+    public void getFile(int fileOption) {
+        try {
+            String[] fileDetail = this.searchManager.getFileDetails(fileOption).split(":");
+            System.out.println("The file you requested is " + fileDetail);
+            FTPClient ftpClient = new FTPClient(fileDetail[0], Integer.parseInt(fileDetail[1]), fileDetail[2]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

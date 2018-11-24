@@ -20,7 +20,7 @@ public class DataSendingOperation implements Runnable {
             DataInputStream dIn = new DataInputStream(clientSocket.getInputStream());
             String fileName = dIn.readUTF();
             if (fileName != null) {
-                sendFile(fileName);
+                sendFile(createFiles(fileName));
             }
             in.close();
         } catch (IOException e) {
@@ -29,16 +29,14 @@ public class DataSendingOperation implements Runnable {
     }
 
 
-    public void sendFile(String fileName) {
+    public void sendFile(File file) {
         try {
             //handle file read
-            File myFile = new File(fileName);
+            File myFile = file;
             byte[] mybytearray = new byte[(int) myFile.length()];
 
             FileInputStream fis = new FileInputStream(myFile);
             BufferedInputStream bis = new BufferedInputStream(fis);
-            //bis.read(mybytearray, 0, mybytearray.length);
-
             DataInputStream dis = new DataInputStream(bis);
             dis.readFully(mybytearray, 0, mybytearray.length);
 
@@ -51,10 +49,21 @@ public class DataSendingOperation implements Runnable {
             dos.writeLong(mybytearray.length);
             dos.write(mybytearray, 0, mybytearray.length);
             dos.flush();
-            System.out.println("File " + fileName + " sent to client.");
+            System.out.println("File " + file.getName() + " sent to client.");
         } catch (Exception e) {
             System.err.println("File does not exist!");
             e.printStackTrace();
         }
+    }
+
+    public File createFiles(String fileName) throws IOException {
+        String fileSeparator = System.getProperty("file.separator");
+        String absoluteFilePath = fileSeparator + "home/smtt/Desktop" + fileSeparator + fileName;
+        File file = new File(absoluteFilePath);
+        System.out.print(absoluteFilePath);
+        if(file.createNewFile()){
+            System.out.println(absoluteFilePath+" File Created");
+        }else System.out.println("File "+absoluteFilePath+" already exists");
+        return file;
     }
 }

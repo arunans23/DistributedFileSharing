@@ -66,7 +66,6 @@ class SearchManager {
 
         for (String s : searchResults.keySet()){
             SearchResult searchResult = searchResults.get(s);
-
             this.fileDownloadOptions.put(fileIndex, searchResult);
 
             ArrayList<String> row1 = new ArrayList<String>();

@@ -87,13 +87,15 @@ public class GNode {
     public int doSearch(String keyword){
         return this.searchManager.doSearch(keyword);
     }
-
-    public void getFile(int fileOption) throws Exception {
-
-        SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
-        System.out.println("The file you requested is " + fileDetail.getFileName());
-        FTPClient ftpClient = new FTPClient(fileDetail.getAddress(),
-                Constants.FTP_PORT, fileDetail.getFileName());
+    public void getFile(int fileOption) {
+        try {
+            SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
+            System.out.println("The file you requested is " + fileDetail);
+            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), Constants.FTP_PORT,
+                    fileDetail.getFileName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

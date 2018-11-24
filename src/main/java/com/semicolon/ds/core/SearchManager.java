@@ -72,7 +72,7 @@ class SearchManager {
             ArrayList<String> row1 = new ArrayList<String>();
             row1.add("" + fileIndex);
             row1.add(searchResult.getFileName());
-            row1.add(searchResult.getAddress() + ":" + searchResult.getPort());
+            row1.add(searchResult.getAddress() + ":" + searchResult.getTcpPort());
             row1.add("" + searchResult.getTimeElapsed());
             row1.add("" + searchResult.getHops());
 

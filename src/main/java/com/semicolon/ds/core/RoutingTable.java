@@ -13,10 +13,12 @@ public class RoutingTable {
     private ArrayList<Neighbour> neighbours;
     private final String address;
     private final int port;
+    private final int tcpPort;
 
-    public RoutingTable(String address, int port) {
+    public RoutingTable(String address, int port, int tcpPort) {
         this.address = address;
         this.port = port;
+        this.tcpPort = tcpPort;
         this.neighbours = new ArrayList<>();
     }
 
@@ -103,5 +105,9 @@ public class RoutingTable {
             }
         }
         return list;
+    }
+
+    public int getTcpPort() {
+        return tcpPort;
     }
 }

@@ -34,14 +34,14 @@ public class GNode {
         } catch (Exception e){
             throw new RuntimeException("Could not find host address");
         }
-        this.ftpServer = new FTPServer(Constants.FTP_PORT);
+        this.ftpServer = new FTPServer(getFreePort());
         Thread t = new Thread(ftpServer);
         t.start();
         this.userName = userName;
         this.port = getFreePort();
 
         this.bsClient = new BSClient();
-        this.messageBroker = new MessageBroker(ipAddress, port);
+        this.messageBroker = new MessageBroker(ipAddress, port, ftpServer.getPort());
 
         this.searchManager = new SearchManager(this.messageBroker);
 

@@ -17,6 +17,7 @@ public class Controller implements Initializable {
 
     public Button buttonSearch;
     public Button leaveButton;
+    public Button buttonDownload;
 
     public Label labelAddress;
     public Label labelPort;
@@ -25,8 +26,10 @@ public class Controller implements Initializable {
     public TextArea areaAvailable;
     public TextArea areaSearch;
     public TextArea areaTable;
+    public TextArea areaDownload;
 
     public TextField textSearch;
+    public TextField textDownload;
 
     public void searchAction() {
         String data = textSearch.getText();
@@ -34,9 +37,16 @@ public class Controller implements Initializable {
 
     }
 
-    public void setData(String ipaddress, String availableData, String port) {
+    public void downloadAction() {
+        // write donwload method
+        this.setDownloadLog();
+
+
+    }
+
+    public void setData(String ipaddress, String port) {
         labelAddress.setText(ipaddress);
-        areaAvailable.setText(availableData);
+        areaAvailable.setText(getAvailableFiles());
         labelPort.setText(port);
 
     }
@@ -64,6 +74,24 @@ public class Controller implements Initializable {
         return "**RoutingTable**";
     }
 
+    private String getAvailableFiles() {
+        return "**available**";
+    }
+
+
+    //use this method to get the file no
+    private int getDowloadFileNO() {
+        return Integer.valueOf(textDownload.getText());
+    }
+
+    private String getDownloadLog() {
+        return "this is the log";
+    }
+
+    private void setDownloadLog() {
+        this.areaDownload.setText(getDownloadLog());
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,7 +103,7 @@ public class Controller implements Initializable {
         }
         node.init();
 
-        this.setData(node.getIpAddress(), "Not yet", String.valueOf(node.getPort()));
+        this.setData(node.getIpAddress(), String.valueOf(node.getPort()));
         this.setRoutingTable(this.getRoutingTable());
 
     }

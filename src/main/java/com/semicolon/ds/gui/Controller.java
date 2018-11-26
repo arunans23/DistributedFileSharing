@@ -84,11 +84,11 @@ public class Controller extends Thread implements Initializable {
     }
 
     private String getRoutingTable() {
-        return "**RoutingTable \n my line**";
+        return node.getRoutingTable();
     }
 
     private String getAvailableFiles() {
-        return "**available \n  line**";
+        return node.getFileNames();
     }
 
 
@@ -125,7 +125,7 @@ public class Controller extends Thread implements Initializable {
                 while (true)
                     try {
                         this.sleep(1000);
-                        setRoutingTable("hello " + count);
+                        setRoutingTable(getRoutingTable());
                         count++;
                     } catch (InterruptedException e) {
                         e.printStackTrace();

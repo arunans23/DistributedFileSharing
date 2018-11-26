@@ -18,8 +18,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         window = primaryStage;
-//        FXMLLoader loader = new FXMLLoader();
-//        Parent root = loader.load(getClass().getResource("/first.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/first.fxml"));
         Parent root = loader.load();
@@ -29,9 +27,8 @@ public class Main extends Application {
             controller.leaveAction();
         });
         primaryStage.setTitle("Distributed File Sharing");
-        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.setScene(new Scene(root, 954, 600));
         primaryStage.show();
-
 
     }
 

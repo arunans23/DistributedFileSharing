@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-public class Controller implements Initializable {
+public class Controller extends Thread implements Initializable {
 
 
     public GNode node;
@@ -31,15 +31,28 @@ public class Controller implements Initializable {
     public TextField textSearch;
     public TextField textDownload;
 
+
     public void searchAction() {
         String data = textSearch.getText();
-        areaSearch.setText(String.valueOf(node.doSearch(data)));
+        if (data.equals(null) || data.isEmpty()) {
+            areaSearch.setText("select a number to download");
+        } else {
+            areaSearch.setText(String.valueOf(node.doSearch(data)));
+            textSearch.setText("");
+        }
+
 
     }
 
     public void downloadAction() {
         // write donwload method
-        this.setDownloadLog();
+        String data = textDownload.getText();
+        if (data.equals(null) || data.isEmpty()) {
+            setDownloadLog("type something to search");
+        } else {
+            this.setDownloadLog("some log");
+            textDownload.setText("");
+        }
 
 
     }
@@ -71,25 +84,25 @@ public class Controller implements Initializable {
     }
 
     private String getRoutingTable() {
-        return "**RoutingTable**";
+        return "**RoutingTable \n my line**";
     }
 
     private String getAvailableFiles() {
-        return "**available**";
+        return "**available \n  line**";
     }
 
 
     //use this method to get the file no
-    private int getDowloadFileNO() {
-        return Integer.valueOf(textDownload.getText());
+    private String getDowloadFileNO() {
+        return textDownload.getText();
     }
 
     private String getDownloadLog() {
         return "this is the log";
     }
 
-    private void setDownloadLog() {
-        this.areaDownload.setText(getDownloadLog());
+    private void setDownloadLog(String log) {
+        this.areaDownload.setText(log);
     }
 
 
@@ -106,5 +119,23 @@ public class Controller implements Initializable {
         this.setData(node.getIpAddress(), String.valueOf(node.getPort()));
         this.setRoutingTable(this.getRoutingTable());
 
+        Thread thread = new Thread("New Thread") {
+            public void run() {
+                int count = 0;
+                while (true)
+                    try {
+                        this.sleep(1000);
+                        setRoutingTable("hello " + count);
+                        count++;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+
+        };
+        thread.start();
+
     }
+
+
 }

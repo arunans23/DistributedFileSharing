@@ -135,4 +135,12 @@ public class GNode {
     public void printRoutingTable(){
         this.messageBroker.getRoutingTable().print();
     }
+
+    public String getRoutingTable() {
+       return this.messageBroker.getRoutingTable().toString();
+    }
+
+    public String getFileNames() {
+        return this.messageBroker.getFiles();
+    }
 }

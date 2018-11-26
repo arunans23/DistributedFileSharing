@@ -71,11 +71,11 @@ public class Controller implements Initializable {
     }
 
     private String getRoutingTable() {
-        return "**RoutingTable**";
+        return node.getRoutingTable();
     }
 
     private String getAvailableFiles() {
-        return "**available**";
+        return node.getFileNames();
     }
 
 

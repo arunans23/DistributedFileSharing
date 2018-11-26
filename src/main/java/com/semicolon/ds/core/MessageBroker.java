@@ -31,6 +31,7 @@ public class MessageBroker extends Thread {
     private PingHandler pingHandler;
     private LeaveHandler leaveHandler;
     private SearchQueryHandler searchQueryHandler;
+    private FileManager fileManager;
 
     private TimeoutManager timeoutManager = new TimeoutManager();
 
@@ -46,6 +47,8 @@ public class MessageBroker extends Thread {
 
         this.pingHandler = PingHandler.getInstance();
         this.leaveHandler = LeaveHandler.getInstance();
+
+        this.fileManager = FileManager.getInstance();
 
         this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
         this.leaveHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
@@ -143,5 +146,9 @@ public class MessageBroker extends Thread {
 
     public void sendLeave() {
         this.leaveHandler.sendLeave();
+    }
+
+    public String getFiles() {
+        return this.fileManager.getFileNames();
     }
 }

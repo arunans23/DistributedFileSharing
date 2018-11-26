@@ -70,7 +70,7 @@ public class Controller implements Initializable {
         String uniqueID = UUID.randomUUID().toString();
         try {
             node = new GNode("node" + uniqueID);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         node.init();

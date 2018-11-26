@@ -27,7 +27,7 @@ public class Main extends Application {
             controller.leaveAction();
         });
         primaryStage.setTitle("Distributed File Sharing");
-        primaryStage.setScene(new Scene(root, 954, 600));
+        primaryStage.setScene(new Scene(root, 1088, 594));
         primaryStage.show();
 
     }

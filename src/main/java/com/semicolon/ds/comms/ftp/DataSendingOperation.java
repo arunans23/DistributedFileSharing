@@ -2,14 +2,20 @@ package com.semicolon.ds.comms.ftp;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class DataSendingOperation implements Runnable {
 
     private Socket clientSocket;
     private BufferedReader in = null;
 
-    public DataSendingOperation(Socket client) {
+    private final Logger LOG = Logger.getLogger(DataSendingOperation.class.getName());
+
+    private String userName;
+
+    public DataSendingOperation(Socket client, String userName) {
         this.clientSocket = client;
+        this.userName = userName;
     }
 
     @Override
@@ -20,7 +26,7 @@ public class DataSendingOperation implements Runnable {
             DataInputStream dIn = new DataInputStream(clientSocket.getInputStream());
             String fileName = dIn.readUTF();
             if (fileName != null) {
-                sendFile(fileName);
+                sendFile(createFiles(fileName));
             }
             in.close();
         } catch (IOException e) {
@@ -29,16 +35,14 @@ public class DataSendingOperation implements Runnable {
     }
 
 
-    public void sendFile(String fileName) {
+    public void sendFile(File file) {
         try {
             //handle file read
-            File myFile = new File(fileName);
+            File myFile = file;
             byte[] mybytearray = new byte[(int) myFile.length()];
 
             FileInputStream fis = new FileInputStream(myFile);
             BufferedInputStream bis = new BufferedInputStream(fis);
-            //bis.read(mybytearray, 0, mybytearray.length);
-
             DataInputStream dis = new DataInputStream(bis);
             dis.readFully(mybytearray, 0, mybytearray.length);
 
@@ -51,10 +55,22 @@ public class DataSendingOperation implements Runnable {
             dos.writeLong(mybytearray.length);
             dos.write(mybytearray, 0, mybytearray.length);
             dos.flush();
-            System.out.println("File " + fileName + " sent to client.");
+            fis.close();
+            LOG.fine("File " + file.getName() + " sent to client.");
         } catch (Exception e) {
-            System.err.println("File does not exist!");
+            LOG.severe("File does not exist!");
             e.printStackTrace();
         }
+    }
+
+    public File createFiles(String fileName) throws IOException {
+        String fileSeparator = System.getProperty("file.separator");
+        String absoluteFilePath = "." + fileSeparator + this.userName + fileSeparator + fileName;
+        File file = new File(absoluteFilePath);
+        file.getParentFile().mkdir();
+        if(file.createNewFile()){
+            LOG.fine(absoluteFilePath+" File Created");
+        }else LOG.fine("File "+absoluteFilePath+" already exists");
+        return file;
     }
 }

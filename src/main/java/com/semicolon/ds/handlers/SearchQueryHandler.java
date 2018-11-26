@@ -1,4 +1,4 @@
-package com.semicolon.ds.utils;
+package com.semicolon.ds.handlers;
 
 import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.ChannelMessage;
@@ -6,10 +6,8 @@ import com.semicolon.ds.core.FileManager;
 import com.semicolon.ds.core.Neighbour;
 import com.semicolon.ds.core.RoutingTable;
 import com.semicolon.ds.core.TimeoutManager;
+import com.semicolon.ds.utils.StringEncoderDecoder;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -111,7 +109,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
                     fileNamesCount,
                     routingTable.getAddress(),
                     routingTable.getPort(),
-                    hops,
+                    Constants.HOP_COUNT- hops,
                     fileNamesString.toString());
 
             String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
@@ -139,7 +137,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
                 String payload = String.format(Constants.QUERY_FORMAT,
                         address,
                         port,
-                        fileName,
+                        StringEncoderDecoder.encode(fileName),
                         hops - 1);
 
                 String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
@@ -151,7 +149,5 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
                 this.sendRequest(queryMessage);
             }
         }
-
-
     }
 }

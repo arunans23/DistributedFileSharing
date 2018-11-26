@@ -14,11 +14,14 @@ public class Neighbour {
     }
 
     public boolean equals (Neighbour newN) {
-        return newN.getPort() == this.port & this.address.equals(newN.getAddress());
+        return (newN.getPort() == this.port | newN.getClientPort() == this.port)
+                & this.address.equals(newN.getAddress());
     }
 
     public boolean equals(String address, int port) {
-        return this.address.equals(address) & this.port == port;
+        return (this.port == port | this.clientPort == port)
+                & this.address.equals(address);
+
     }
 
     public String getAddress() {

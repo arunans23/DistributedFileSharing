@@ -1,25 +1,17 @@
 package com.semicolon.ds.comms.ftp;
 
-import java.io.*;
 import java.net.Socket;
 
 public class FTPClient {
 
-    String fileName;
-
-    public FTPClient() throws Exception {
+    public FTPClient(String IpAddress, int port, String fileName) throws Exception {
 
         long start = System.currentTimeMillis();
-        // localhost for testing
-        Socket serverSock = new Socket("127.0.0.1", 13267);
+        Socket serverSock = new Socket(IpAddress, port);
 
         System.out.println("Connecting...");
-        Thread t = new Thread(new DataReceivingOperation(serverSock, "test.txt"));
+        Thread t = new Thread(new DataReceivingOperation(serverSock, fileName));
         t.start();
-    }
-
-    public static void main(String[] args) throws Exception {
-        FTPClient ftpClient = new FTPClient();
-
+        long stop = System.currentTimeMillis();
     }
 }

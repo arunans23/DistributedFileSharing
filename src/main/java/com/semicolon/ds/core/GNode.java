@@ -1,10 +1,15 @@
 package com.semicolon.ds.core;
 
+import com.semicolon.ds.Constants;
 import com.semicolon.ds.comms.BSClient;
+import com.semicolon.ds.comms.ftp.DataSendingOperation;
+import com.semicolon.ds.comms.ftp.FTPClient;
+import com.semicolon.ds.comms.ftp.FTPServer;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class GNode {
@@ -18,8 +23,9 @@ public class GNode {
     private int port;
     private MessageBroker messageBroker;
     private SearchManager searchManager;
+    private FTPServer ftpServer;
 
-    public GNode (String userName) throws IOException {
+    public GNode (String userName) throws Exception {
 
         try (final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
@@ -31,6 +37,10 @@ public class GNode {
 
         this.userName = userName;
         this.port = getFreePort();
+
+        this.ftpServer = new FTPServer(this.port + Constants.FTP_PORT_OFFSET, userName);
+        Thread t = new Thread(ftpServer);
+        t.start();
 
         this.bsClient = new BSClient();
         this.messageBroker = new MessageBroker(ipAddress, port);
@@ -69,6 +79,7 @@ public class GNode {
     public void unRegister() {
         try{
             this.bsClient.unRegister(this.userName, this.ipAddress, this.port);
+            this.messageBroker.sendLeave();
 
         } catch (IOException e) {
             LOG.severe("Un-Registering Gnode failed");
@@ -79,12 +90,19 @@ public class GNode {
     public int doSearch(String keyword){
         return this.searchManager.doSearch(keyword);
     }
+    public void getFile(int fileOption) {
+        try {
+            SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
+            System.out.println("The file you requested is " + fileDetail.getFileName());
+            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), fileDetail.getTcpPort(),
+                    fileDetail.getFileName());
 
-    public void getFile(int fileOption){
-        String fileDetail = this.searchManager.getFileDetails(fileOption);
-        System.out.println("The file you requested is " + fileDetail);
+            System.out.println("Waiting for file download...");
+            Thread.sleep(Constants.FILE_DOWNLOAD_TIMEOUT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 
     public String getUserName() {
         return userName;

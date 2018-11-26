@@ -1,7 +1,7 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
-import com.semicolon.ds.utils.TimeoutCallback;
+import com.semicolon.ds.handlers.TimeoutCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;

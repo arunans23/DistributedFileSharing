@@ -1,4 +1,4 @@
-package com.semicolon.ds.utils;
+package com.semicolon.ds.handlers;
 
 import com.semicolon.ds.comms.ChannelMessage;
 import com.semicolon.ds.core.RoutingTable;
@@ -11,4 +11,5 @@ interface AbstractMessageHandler {
             RoutingTable routingTable,
             BlockingQueue<ChannelMessage> channelOut,
             TimeoutManager timeoutManager);
+
 }

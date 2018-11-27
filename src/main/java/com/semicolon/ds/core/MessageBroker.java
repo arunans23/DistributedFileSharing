@@ -48,7 +48,7 @@ public class MessageBroker extends Thread {
         this.pingHandler = PingHandler.getInstance();
         this.leaveHandler = LeaveHandler.getInstance();
 
-        this.fileManager = FileManager.getInstance();
+        this.fileManager = FileManager.getInstance("");
 
         this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutManager);
         this.leaveHandler.init(this.routingTable, this.channelOut, this.timeoutManager);

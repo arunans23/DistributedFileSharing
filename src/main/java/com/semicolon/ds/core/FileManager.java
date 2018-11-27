@@ -37,9 +37,9 @@ public class FileManager {
         printFileNames();
     }
 
-    public static synchronized FileManager getInstance() {
+    public static synchronized FileManager getInstance(String userName) {
         if (fileManager == null) {
-            fileManager = new FileManager();
+            fileManager = new FileManager(userName);
 
         }
         return fileManager;

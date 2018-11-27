@@ -48,8 +48,11 @@ public class FileManager {
 
         for (String q: querySplit){
             for (String key: this.files.keySet()){
-                if (key.toLowerCase().indexOf(q.toLowerCase()) != -1){
-                    result.add(key);
+                String[] fileNameSplit = key.split(" ");
+                for (String f : fileNameSplit){
+                    if (f.toLowerCase().equals(q.toLowerCase())){
+                        result.add(key);
+                    }
                 }
             }
         }

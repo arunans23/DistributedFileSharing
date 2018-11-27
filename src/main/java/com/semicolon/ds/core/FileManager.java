@@ -2,8 +2,10 @@ package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class FileManager {
@@ -61,16 +63,16 @@ public class FileManager {
 
         //Get file from resources folder
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(Constants.FILE_NAMES).getFile());
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
+                (classLoader.getResourceAsStream(Constants.FILE_NAMES)));
 
-        try (Scanner scanner = new Scanner(file)) {
+        try {
 
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+            for (String line; (line = bufferedReader.readLine()) != null;) {
                 fileNames.add(line);
             }
 
-            scanner.close();
+            bufferedReader.close();
 
         } catch (IOException e) {
             e.printStackTrace();

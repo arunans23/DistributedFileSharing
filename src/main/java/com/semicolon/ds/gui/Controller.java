@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -31,13 +33,23 @@ public class Controller extends Thread implements Initializable {
     public TextField textSearch;
     public TextField textDownload;
 
+    private int resultsCount = 0;
+
 
     public void searchAction() {
         String data = textSearch.getText();
         if (data.equals(null) || data.isEmpty()) {
             areaSearch.setText("select a number to download");
         } else {
-            areaSearch.setText(String.valueOf(node.doSearch(data)));
+            List<String> results = node.doUISearch(data);
+            this.resultsCount = results.size();
+            String output = "";
+            int optionNo = 1;
+            for(String s : results){
+                output += optionNo + "\t" + s + "\n";
+                optionNo++;
+            }
+            areaSearch.setText(output);
             textSearch.setText("");
         }
 
@@ -47,11 +59,25 @@ public class Controller extends Thread implements Initializable {
     public void downloadAction() {
         // write donwload method
         String data = textDownload.getText();
+
         if (data.equals(null) || data.isEmpty()) {
             setDownloadLog("type something to search");
         } else {
-            this.setDownloadLog("some log");
-            textDownload.setText("");
+            if (isStringInt(data)){
+                int intData = Integer.parseInt(data);
+                if (intData <= resultsCount){
+                    this.setDownloadLog("File starting to download");
+                    node.getFile(intData, this.areaDownload);
+                    textDownload.setText("");
+                    this.resultsCount = 0;
+                } else {
+                    setDownloadLog("Invalid option");
+                }
+
+            } else {
+                setDownloadLog("Enter a valid integer");
+            }
+
         }
 
 
@@ -135,6 +161,15 @@ public class Controller extends Thread implements Initializable {
         };
         thread.start();
 
+    }
+
+    private boolean isStringInt(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
     }
 
 

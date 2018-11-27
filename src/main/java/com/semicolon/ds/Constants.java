@@ -22,7 +22,7 @@ public class Constants {
 
     public static final String BPING_FORMAT = "BPING %s %s %s";
     public static final String BPONG_FORMAT = "BPONG %s %s";
-    public static final int BPING_HOP_LIMIT = 2;
+    public static final int BPING_HOP_LIMIT = 3;
 
     public static final String QUERY_FORMAT = "SER %s %s %s %s";
     public static final String QUERY_HIT_FORMAT = "SEROK %s %s %s %s %s";
@@ -34,7 +34,7 @@ public class Constants {
     public static final int TIMEOUT_REG = 10000;
 
     public static final int MIN_NEIGHBOURS = 2;
-    public static final int MAX_NEIGHBOURS = 4;
+    public static final int MAX_NEIGHBOURS = 6;
 
     public static final int PING_TIMEOUT = 3000;
     public static final int PING_INTERVAL = 8000;

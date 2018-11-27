@@ -6,6 +6,7 @@ import com.semicolon.ds.comms.ftp.DataSendingOperation;
 import com.semicolon.ds.comms.ftp.FTPClient;
 import com.semicolon.ds.comms.ftp.FTPServer;
 
+import javafx.scene.control.TextArea;
 import java.io.IOException;
 import java.net.*;
 import java.util.List;
@@ -90,6 +91,11 @@ public class GNode {
     public int doSearch(String keyword){
         return this.searchManager.doSearch(keyword);
     }
+
+    public List<String> doUISearch(String keyword) {
+        return this.searchManager.doUISearch(keyword);
+    }
+
     public void getFile(int fileOption) {
         try {
             SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
@@ -99,6 +105,18 @@ public class GNode {
 
             System.out.println("Waiting for file download...");
             Thread.sleep(Constants.FILE_DOWNLOAD_TIMEOUT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getFile(int fileOption, TextArea textArea) {
+        try {
+            SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
+            System.out.println("The file you requested is " + fileDetail.getFileName());
+            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), fileDetail.getTcpPort(),
+                    fileDetail.getFileName(),textArea);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,5 +152,13 @@ public class GNode {
 
     public void printRoutingTable(){
         this.messageBroker.getRoutingTable().print();
+    }
+
+    public String getRoutingTable() {
+       return this.messageBroker.getRoutingTable().toString();
+    }
+
+    public String getFileNames() {
+        return this.messageBroker.getFiles();
     }
 }

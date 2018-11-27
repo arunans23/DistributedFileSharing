@@ -41,6 +41,47 @@ class SearchManager {
         return fileDownloadOptions.size();
     }
 
+    List<String> doUISearch(String keyword){
+
+        Map<String, SearchResult> searchResults
+                = new HashMap<String, SearchResult>();
+
+        QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
+        queryHitHandler.setSearchResutls(searchResults);
+        queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
+
+        this.messageBroker.doSearch(keyword);
+
+        System.out.println("Please be patient till the file results are returned ...");
+
+        try{
+            Thread.sleep(Constants.SEARCH_TIMEOUT);
+
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        List<String> results = new ArrayList<String>();
+
+        int fileIndex = 1;
+
+        this.fileDownloadOptions = new HashMap<Integer, SearchResult>();
+
+        for (String s: searchResults.keySet()){
+            SearchResult searchResult = searchResults.get(s);
+            String temp = "" + searchResult.getFileName() + "\t" +
+                    searchResult.getAddress() + ":" + searchResult.getPort() + "\t" +
+                    searchResult.getHops() + "\t" + searchResult.getTimeElapsed() + "ms";
+            this.fileDownloadOptions.put(fileIndex, searchResult);
+            results.add(temp);
+            fileIndex++;
+        }
+
+        this.clearSearchResults();
+
+        return results;
+    }
+
     private void clearSearchResults(){
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
 

@@ -88,4 +88,13 @@ public class FileManager {
             System.out.println(s);
         }
     }
+
+    public String getFileNames() {
+        String fileString = "Total files: " + files.size() + "\n";
+        fileString += "++++++++++++++++++++++++++\n";
+        for (String s: files.keySet()) {
+            fileString += s + "\n";
+        }
+        return fileString;
+    }
 }

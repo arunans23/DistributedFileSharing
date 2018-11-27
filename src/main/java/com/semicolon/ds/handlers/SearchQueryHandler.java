@@ -30,7 +30,7 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
     private FileManager fileManager;
 
     private SearchQueryHandler(){
-        fileManager = FileManager.getInstance();
+        fileManager = FileManager.getInstance("");
     }
 
     public synchronized static SearchQueryHandler getInstance(){

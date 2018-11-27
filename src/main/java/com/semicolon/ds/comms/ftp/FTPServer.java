@@ -1,16 +1,16 @@
 package com.semicolon.ds.comms.ftp;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
+import java.util.logging.Logger;
+
 
 public class FTPServer implements Runnable{
 
     private ServerSocket serverSocket;
     private Socket clientsocket;
-
+    private final Logger LOG = Logger.getLogger(FTPServer.class.getName());
     private String userName;
 
     public FTPServer(int port, String userName) throws Exception {

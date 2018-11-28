@@ -1,5 +1,7 @@
 package com.semicolon.ds.comms.ftp;
 
+import com.semicolon.ds.core.FileManager;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -25,8 +27,9 @@ public class DataSendingOperation implements Runnable {
                     clientSocket.getInputStream()));
             DataInputStream dIn = new DataInputStream(clientSocket.getInputStream());
             String fileName = dIn.readUTF();
+
             if (fileName != null) {
-                sendFile(createFiles(fileName));
+                sendFile(FileManager.getInstance("").getFile(fileName));
             }
             in.close();
         } catch (IOException e) {
@@ -61,18 +64,5 @@ public class DataSendingOperation implements Runnable {
             LOG.severe("File does not exist!");
             e.printStackTrace();
         }
-    }
-
-    public File createFiles(String fileName) throws IOException {
-        String fileSeparator = System.getProperty("file.separator");
-        String absoluteFilePath = "." + fileSeparator + this.userName + fileSeparator + fileName;
-        File file = new File(absoluteFilePath);
-        file.getParentFile().mkdir();
-        if (file.createNewFile()) {
-            LOG.fine(absoluteFilePath+" File Created");
-        } else LOG.fine("File "+absoluteFilePath+" already exists");
-        RandomAccessFile f = new RandomAccessFile(file, "rw");
-        f.setLength(1024 * 1024 * 8);
-        return file;
     }
 }

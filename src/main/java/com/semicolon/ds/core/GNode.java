@@ -37,7 +37,7 @@ public class GNode {
 
         this.userName = userName;
         this.port = getFreePort();
-
+        FileManager fileManager = FileManager.getInstance(userName);
         this.ftpServer = new FTPServer(this.port + Constants.FTP_PORT_OFFSET, userName);
         Thread t = new Thread(ftpServer);
         t.start();

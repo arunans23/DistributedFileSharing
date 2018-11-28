@@ -1,12 +1,11 @@
 package com.semicolon.ds.core;
 
 import com.semicolon.ds.Constants;
+import com.semicolon.ds.comms.ftp.DataSendingOperation;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class FileManager {
 
@@ -14,8 +13,18 @@ public class FileManager {
 
     private Map<String, String> files;
 
-    private FileManager() {
+    private String userName;
+
+    private String fileSeparator = System.getProperty("file.separator");
+    private String rootFolder =  "." + fileSeparator + this.userName;
+
+
+    private final Logger LOG = Logger.getLogger(FileManager.class.getName());
+
+    private FileManager(String userName) {
         files = new HashMap<>();
+
+        this.userName = userName;
 
         ArrayList<String> fullList = readFileNamesFromResources();
 
@@ -28,9 +37,9 @@ public class FileManager {
         printFileNames();
     }
 
-    public static synchronized FileManager getInstance() {
+    public static synchronized FileManager getInstance(String userName) {
         if (fileManager == null) {
-            fileManager = new FileManager();
+            fileManager = new FileManager(userName);
 
         }
         return fileManager;
@@ -84,11 +93,33 @@ public class FileManager {
         return fileNames;
     }
 
-    private void printFileNames(){
+    private void printFileNames() {
         System.out.println("Total files: " + files.size());
         System.out.println("++++++++++++++++++++++++++");
         for (String s: files.keySet()) {
             System.out.println(s);
+            createFile(s);
         }
+    }
+
+    public void createFile(String fileName) {
+        try {
+            String absoluteFilePath = this.rootFolder + fileSeparator + fileName;
+            File file = new File(absoluteFilePath);
+            file.getParentFile().mkdir();
+            if (file.createNewFile()) {
+                LOG.fine(absoluteFilePath + " File Created");
+            } else LOG.fine("File " + absoluteFilePath + " already exists");
+            RandomAccessFile f = new RandomAccessFile(file, "rw");
+            f.setLength(1024 * 1024 * 8);
+        } catch (IOException e) {
+            LOG.severe("File creating failed");
+            e.printStackTrace();
+        }
+    }
+
+    public File getFile(String fileName) {
+        File file = new File(rootFolder + fileSeparator + fileName);
+        return file;
     }
 }

@@ -51,6 +51,7 @@ public class DataReceivingOperation implements Runnable {
 
         } catch (IOException ex) {
             System.err.println("server error. Connection closed.");
+            ex.printStackTrace();
         }
     }
 }

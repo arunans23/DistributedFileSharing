@@ -16,7 +16,7 @@ public class FileManager {
     private String userName;
 
     private String fileSeparator = System.getProperty("file.separator");
-    private String rootFolder =  "." + fileSeparator + this.userName;
+    private String rootFolder;
 
 
     private final Logger LOG = Logger.getLogger(FileManager.class.getName());
@@ -25,6 +25,7 @@ public class FileManager {
         files = new HashMap<>();
 
         this.userName = userName;
+        this.rootFolder =   "." + fileSeparator + this.userName;
 
         ArrayList<String> fullList = readFileNamesFromResources();
 

@@ -68,9 +68,11 @@ public class DataSendingOperation implements Runnable {
         String absoluteFilePath = "." + fileSeparator + this.userName + fileSeparator + fileName;
         File file = new File(absoluteFilePath);
         file.getParentFile().mkdir();
-        if(file.createNewFile()){
+        if (file.createNewFile()) {
             LOG.fine(absoluteFilePath+" File Created");
-        }else LOG.fine("File "+absoluteFilePath+" already exists");
+        } else LOG.fine("File "+absoluteFilePath+" already exists");
+        RandomAccessFile f = new RandomAccessFile(file, "rw");
+        f.setLength(1024 * 1024 * 8);
         return file;
     }
 }

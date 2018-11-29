@@ -61,11 +61,13 @@ public class QueryHitHandler implements AbstractResponseHandler {
 
             String fileName = StringEncoderDecoder.decode(stringToken.nextToken());
 
-            if(!this.searchResutls.containsKey(addressKey + fileName)){
-                this.searchResutls.put(addressKey + fileName,
-                        new SearchResult(fileName, address, port, hops,
-                                (System.currentTimeMillis() - searchInitiatedTime)));
+            if (this.searchResutls != null){
+                if(!this.searchResutls.containsKey(addressKey + fileName)){
+                    this.searchResutls.put(addressKey + fileName,
+                            new SearchResult(fileName, address, port, hops,
+                                    (System.currentTimeMillis() - searchInitiatedTime)));
 
+                }
             }
 
             filesCount--;

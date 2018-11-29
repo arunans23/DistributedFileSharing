@@ -103,6 +103,15 @@ public class FileManager {
         }
     }
 
+    public String getFileNames() {
+        String fileString = "Total files: " + files.size() + "\n";
+        fileString += "++++++++++++++++++++++++++\n";
+        for (String s: files.keySet()) {
+            fileString += s + "\n";
+        }
+        return fileString;
+    }
+
     public void createFile(String fileName) {
         try {
             String absoluteFilePath = this.rootFolder + fileSeparator + fileName;

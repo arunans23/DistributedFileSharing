@@ -66,6 +66,20 @@ public class RoutingTable {
         }
     }
 
+    public synchronized String toString() {
+        String table = "Total neighbours: " + neighbours.size() + "\n";
+        table += "Address: " + address + ":" + port + "\n";
+        table += "++++++++++++++++++++++++++" + "\n";
+        for (Neighbour n :neighbours) {
+            table +=
+                    "Address: " + n.getAddress()
+                            + " Port: " + n.getPort()
+                            + " Pings: " + n.getPingPongs() + "\n"
+            ;
+        }
+        return table;
+    }
+
     public synchronized ArrayList<String> toList() {
         ArrayList<String> list = new ArrayList<>();
         for (Neighbour n: neighbours) {

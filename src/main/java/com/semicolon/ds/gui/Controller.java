@@ -43,13 +43,20 @@ public class Controller extends Thread implements Initializable {
         } else {
             List<String> results = node.doUISearch(data);
             this.resultsCount = results.size();
-            String output = "";
-            int optionNo = 1;
-            for(String s : results){
-                output += optionNo + "\t" + s + "\n";
-                optionNo++;
+
+            if (resultsCount == 0){
+                areaSearch.setText("Sorry, no files found");
+
+            } else {
+                String output = "";
+                int optionNo = 1;
+                for(String s : results){
+                    output += optionNo + "\t" + s + "\n";
+                    optionNo++;
+                }
+
+                areaSearch.setText(output);
             }
-            areaSearch.setText(output);
             textSearch.setText("");
         }
 
